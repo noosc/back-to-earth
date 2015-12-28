@@ -6,8 +6,13 @@
 //
 //
 
-#ifndef MenuScene_h
-#define MenuScene_h
+#import "cocos2d.h"
+#import <GameKit/GameKit.h>
 
-
-#endif /* MenuScene_h */
+@interface MenuLayer : CCLayer
+{
+    CCSprite* background;
+    CCSprite* go;
+}
++(CCScene *) scene;
+@end

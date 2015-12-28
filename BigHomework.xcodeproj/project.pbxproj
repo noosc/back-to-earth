@@ -131,8 +131,31 @@
 		DD37984D1C23CD7A005669C2 /* vec4.c in Sources */ = {isa = PBXBuildFile; fileRef = DD37984C1C23CD7A005669C2 /* vec4.c */; };
 		DD3798521C23CD7A005669C2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3798511C23CD7A005669C2 /* main.m */; };
 		DD3798551C23CD7A005669C2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3798541C23CD7A005669C2 /* AppDelegate.m */; };
-		DD3798581C23CD7A005669C2 /* HelloWorldLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3798571C23CD7A005669C2 /* HelloWorldLayer.m */; };
 		DD37985B1C23CD7A005669C2 /* IntroLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DD37985A1C23CD7A005669C2 /* IntroLayer.m */; };
+		DD3798651C23CFEF005669C2 /* MenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3798641C23CFEF005669C2 /* MenuScene.m */; };
+		DD37986B1C23D278005669C2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD37986A1C23D278005669C2 /* Default-568h@2x.png */; };
+		DD37986D1C23D280005669C2 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = DD37986C1C23D280005669C2 /* background.png */; };
+		DD3798701C23D307005669C2 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DD37986F1C23D307005669C2 /* GameScene.m */; };
+		DD3798771C23DAC0005669C2 /* SquareSprite.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3798761C23DAC0005669C2 /* SquareSprite.m */; };
+		DD37987B1C23DF9B005669C2 /* outframe.png in Resources */ = {isa = PBXBuildFile; fileRef = DD3798781C23DF9B005669C2 /* outframe.png */; };
+		DD3798801C23E523005669C2 /* SquareCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DD37987F1C23E523005669C2 /* SquareCache.m */; };
+		DD3798821C26641C005669C2 /* mask.png in Resources */ = {isa = PBXBuildFile; fileRef = DD3798811C26641C005669C2 /* mask.png */; };
+		DD3798911C2ADC08005669C2 /* remove-1.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD37988C1C2ADC08005669C2 /* remove-1.plist */; };
+		DD3798921C2ADC08005669C2 /* remove-2.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD37988D1C2ADC08005669C2 /* remove-2.plist */; };
+		DD3798931C2ADC08005669C2 /* remove-3.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD37988E1C2ADC08005669C2 /* remove-3.plist */; };
+		DD3798941C2ADC08005669C2 /* remove-4.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD37988F1C2ADC08005669C2 /* remove-4.plist */; };
+		DD3798951C2ADC08005669C2 /* remove-5.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD3798901C2ADC08005669C2 /* remove-5.plist */; };
+		DD3798971C2BBAEC005669C2 /* Aurora'sTheme.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = DD3798961C2BBAEC005669C2 /* Aurora'sTheme.mp4 */; };
+		DD37989C1C2BC470005669C2 /* square.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD37989A1C2BC470005669C2 /* square.plist */; };
+		DD37989D1C2BC470005669C2 /* square.png in Resources */ = {isa = PBXBuildFile; fileRef = DD37989B1C2BC470005669C2 /* square.png */; };
+		DD3798B01C2D0D6A005669C2 /* start1.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD3798AA1C2D0D6A005669C2 /* start1.plist */; };
+		DD3798B11C2D0D6A005669C2 /* start1.png in Resources */ = {isa = PBXBuildFile; fileRef = DD3798AB1C2D0D6A005669C2 /* start1.png */; };
+		DD3798B21C2D0D6A005669C2 /* start2.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD3798AC1C2D0D6A005669C2 /* start2.plist */; };
+		DD3798B31C2D0D6A005669C2 /* start2.png in Resources */ = {isa = PBXBuildFile; fileRef = DD3798AD1C2D0D6A005669C2 /* start2.png */; };
+		DD3798B41C2D0D6A005669C2 /* start3.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD3798AE1C2D0D6A005669C2 /* start3.plist */; };
+		DD3798B51C2D0D6A005669C2 /* start3.png in Resources */ = {isa = PBXBuildFile; fileRef = DD3798AF1C2D0D6A005669C2 /* start3.png */; };
+		DD3798B81C2D2349005669C2 /* go.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD3798B61C2D2349005669C2 /* go.plist */; };
+		DD3798B91C2D2349005669C2 /* go.png in Resources */ = {isa = PBXBuildFile; fileRef = DD3798B71C2D2349005669C2 /* go.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -394,10 +417,36 @@
 		DD3798511C23CD7A005669C2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DD3798531C23CD7A005669C2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		DD3798541C23CD7A005669C2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		DD3798561C23CD7A005669C2 /* HelloWorldLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloWorldLayer.h; sourceTree = "<group>"; };
-		DD3798571C23CD7A005669C2 /* HelloWorldLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloWorldLayer.m; sourceTree = "<group>"; };
 		DD3798591C23CD7A005669C2 /* IntroLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntroLayer.h; sourceTree = "<group>"; };
 		DD37985A1C23CD7A005669C2 /* IntroLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IntroLayer.m; sourceTree = "<group>"; };
+		DD3798631C23CF89005669C2 /* MenuScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuScene.h; sourceTree = "<group>"; };
+		DD3798641C23CFEF005669C2 /* MenuScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuScene.m; sourceTree = "<group>"; };
+		DD37986A1C23D278005669C2 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = SOURCE_ROOT; };
+		DD37986C1C23D280005669C2 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background.png; path = Resources/background.png; sourceTree = "<group>"; };
+		DD37986E1C23D2CE005669C2 /* GameScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
+		DD37986F1C23D307005669C2 /* GameScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameScene.m; sourceTree = "<group>"; };
+		DD3798751C23D94E005669C2 /* SquareSprite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SquareSprite.h; sourceTree = "<group>"; };
+		DD3798761C23DAC0005669C2 /* SquareSprite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SquareSprite.m; sourceTree = "<group>"; };
+		DD3798781C23DF9B005669C2 /* outframe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = outframe.png; path = Resources/outframe.png; sourceTree = "<group>"; };
+		DD37987E1C23E44C005669C2 /* SquareCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SquareCache.h; sourceTree = "<group>"; };
+		DD37987F1C23E523005669C2 /* SquareCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SquareCache.m; sourceTree = "<group>"; };
+		DD3798811C26641C005669C2 /* mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mask.png; path = Resources/mask.png; sourceTree = "<group>"; };
+		DD37988C1C2ADC08005669C2 /* remove-1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "remove-1.plist"; path = "Resources/remove-1.plist"; sourceTree = "<group>"; };
+		DD37988D1C2ADC08005669C2 /* remove-2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "remove-2.plist"; path = "Resources/remove-2.plist"; sourceTree = "<group>"; };
+		DD37988E1C2ADC08005669C2 /* remove-3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "remove-3.plist"; path = "Resources/remove-3.plist"; sourceTree = "<group>"; };
+		DD37988F1C2ADC08005669C2 /* remove-4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "remove-4.plist"; path = "Resources/remove-4.plist"; sourceTree = "<group>"; };
+		DD3798901C2ADC08005669C2 /* remove-5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "remove-5.plist"; path = "Resources/remove-5.plist"; sourceTree = "<group>"; };
+		DD3798961C2BBAEC005669C2 /* Aurora'sTheme.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Aurora'sTheme.mp4"; path = "Resources/Aurora'sTheme.mp4"; sourceTree = "<group>"; };
+		DD37989A1C2BC470005669C2 /* square.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = square.plist; path = Resources/square.plist; sourceTree = "<group>"; };
+		DD37989B1C2BC470005669C2 /* square.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = square.png; path = Resources/square.png; sourceTree = "<group>"; };
+		DD3798AA1C2D0D6A005669C2 /* start1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = start1.plist; path = Resources/start1.plist; sourceTree = "<group>"; };
+		DD3798AB1C2D0D6A005669C2 /* start1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = start1.png; path = Resources/start1.png; sourceTree = "<group>"; };
+		DD3798AC1C2D0D6A005669C2 /* start2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = start2.plist; path = Resources/start2.plist; sourceTree = "<group>"; };
+		DD3798AD1C2D0D6A005669C2 /* start2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = start2.png; path = Resources/start2.png; sourceTree = "<group>"; };
+		DD3798AE1C2D0D6A005669C2 /* start3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = start3.plist; path = Resources/start3.plist; sourceTree = "<group>"; };
+		DD3798AF1C2D0D6A005669C2 /* start3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = start3.png; path = Resources/start3.png; sourceTree = "<group>"; };
+		DD3798B61C2D2349005669C2 /* go.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = go.plist; path = Resources/go.plist; sourceTree = "<group>"; };
+		DD3798B71C2D2349005669C2 /* go.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = go.png; path = Resources/go.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -456,10 +505,16 @@
 		DD3796DB1C23CD79005669C2 /* BigHomework */ = {
 			isa = PBXGroup;
 			children = (
+				DD37987E1C23E44C005669C2 /* SquareCache.h */,
+				DD37987F1C23E523005669C2 /* SquareCache.m */,
+				DD3798751C23D94E005669C2 /* SquareSprite.h */,
+				DD3798761C23DAC0005669C2 /* SquareSprite.m */,
+				DD37986E1C23D2CE005669C2 /* GameScene.h */,
+				DD37986F1C23D307005669C2 /* GameScene.m */,
+				DD3798631C23CF89005669C2 /* MenuScene.h */,
+				DD3798641C23CFEF005669C2 /* MenuScene.m */,
 				DD3798531C23CD7A005669C2 /* AppDelegate.h */,
 				DD3798541C23CD7A005669C2 /* AppDelegate.m */,
-				DD3798561C23CD7A005669C2 /* HelloWorldLayer.h */,
-				DD3798571C23CD7A005669C2 /* HelloWorldLayer.m */,
 				DD3798591C23CD7A005669C2 /* IntroLayer.h */,
 				DD37985A1C23CD7A005669C2 /* IntroLayer.m */,
 				DD3796DC1C23CD79005669C2 /* Resources */,
@@ -472,6 +527,26 @@
 		DD3796DC1C23CD79005669C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DD3798B61C2D2349005669C2 /* go.plist */,
+				DD3798B71C2D2349005669C2 /* go.png */,
+				DD3798AA1C2D0D6A005669C2 /* start1.plist */,
+				DD3798AB1C2D0D6A005669C2 /* start1.png */,
+				DD3798AC1C2D0D6A005669C2 /* start2.plist */,
+				DD3798AD1C2D0D6A005669C2 /* start2.png */,
+				DD3798AE1C2D0D6A005669C2 /* start3.plist */,
+				DD3798AF1C2D0D6A005669C2 /* start3.png */,
+				DD37989A1C2BC470005669C2 /* square.plist */,
+				DD37989B1C2BC470005669C2 /* square.png */,
+				DD3798961C2BBAEC005669C2 /* Aurora'sTheme.mp4 */,
+				DD37988C1C2ADC08005669C2 /* remove-1.plist */,
+				DD37988D1C2ADC08005669C2 /* remove-2.plist */,
+				DD37988E1C2ADC08005669C2 /* remove-3.plist */,
+				DD37988F1C2ADC08005669C2 /* remove-4.plist */,
+				DD3798901C2ADC08005669C2 /* remove-5.plist */,
+				DD3798811C26641C005669C2 /* mask.png */,
+				DD3798781C23DF9B005669C2 /* outframe.png */,
+				DD37986C1C23D280005669C2 /* background.png */,
+				DD37986A1C23D278005669C2 /* Default-568h@2x.png */,
 				DD3796DD1C23CD79005669C2 /* Default.png */,
 				DD3796DF1C23CD79005669C2 /* Default-Landscape~ipad.png */,
 				DD3796E11C23CD79005669C2 /* fps_images.png */,
@@ -889,18 +964,38 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD3796EC1C23CD79005669C2 /* Icon-Small.png in Resources */,
+				DD37986D1C23D280005669C2 /* background.png in Resources */,
+				DD3798B91C2D2349005669C2 /* go.png in Resources */,
 				DD3796E01C23CD79005669C2 /* Default-Landscape~ipad.png in Resources */,
 				DD3796F01C23CD79005669C2 /* Icon.png in Resources */,
+				DD3798B11C2D0D6A005669C2 /* start1.png in Resources */,
+				DD3798931C2ADC08005669C2 /* remove-3.plist in Resources */,
+				DD3798B51C2D0D6A005669C2 /* start3.png in Resources */,
+				DD3798951C2ADC08005669C2 /* remove-5.plist in Resources */,
 				DD3796EA1C23CD79005669C2 /* Icon-Small-50.png in Resources */,
 				DD3796EE1C23CD79005669C2 /* Icon-Small@2x.png in Resources */,
+				DD37986B1C23D278005669C2 /* Default-568h@2x.png in Resources */,
+				DD37987B1C23DF9B005669C2 /* outframe.png in Resources */,
+				DD3798971C2BBAEC005669C2 /* Aurora'sTheme.mp4 in Resources */,
 				DD3796F21C23CD79005669C2 /* Icon@2x.png in Resources */,
+				DD37989D1C2BC470005669C2 /* square.png in Resources */,
 				DD3796DE1C23CD79005669C2 /* Default.png in Resources */,
+				DD3798921C2ADC08005669C2 /* remove-2.plist in Resources */,
+				DD3798911C2ADC08005669C2 /* remove-1.plist in Resources */,
+				DD3798821C26641C005669C2 /* mask.png in Resources */,
 				DD3796F51C23CD79005669C2 /* iTunesArtwork in Resources */,
 				DD3798331C23CD7A005669C2 /* ChangeLog in Resources */,
 				DD3796E61C23CD79005669C2 /* fps_images-ipadhd.png in Resources */,
 				DD3796E21C23CD79005669C2 /* fps_images.png in Resources */,
+				DD3798B21C2D0D6A005669C2 /* start2.plist in Resources */,
+				DD3798B81C2D2349005669C2 /* go.plist in Resources */,
 				DD3796E41C23CD79005669C2 /* fps_images-hd.png in Resources */,
 				DD3796E81C23CD79005669C2 /* Icon-72.png in Resources */,
+				DD3798B41C2D0D6A005669C2 /* start3.plist in Resources */,
+				DD3798941C2ADC08005669C2 /* remove-4.plist in Resources */,
+				DD37989C1C2BC470005669C2 /* square.plist in Resources */,
+				DD3798B01C2D0D6A005669C2 /* start1.plist in Resources */,
+				DD3798B31C2D0D6A005669C2 /* start2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -930,6 +1025,7 @@
 				DD3797C21C23CD79005669C2 /* cocos2d.m in Sources */,
 				DD37971B1C23CD79005669C2 /* CCActionTiledGrid.m in Sources */,
 				DD37977B1C23CD79005669C2 /* CCScheduler.m in Sources */,
+				DD3798771C23DAC0005669C2 /* SquareSprite.m in Sources */,
 				DD3797EE1C23CD7A005669C2 /* ccCArray.m in Sources */,
 				DD3797B21C23CD79005669C2 /* CCTMXTiledMap.m in Sources */,
 				DD37975C1C23CD79005669C2 /* CCNode+Debug.m in Sources */,
@@ -940,6 +1036,7 @@
 				DD3797181C23CD79005669C2 /* CCActionProgressTimer.m in Sources */,
 				DD3797681C23CD79005669C2 /* CCParticleExamples.m in Sources */,
 				DD3797E71C23CD79005669C2 /* base64.c in Sources */,
+				DD3798801C23E523005669C2 /* SquareCache.m in Sources */,
 				DD3797D41C23CD79005669C2 /* CCTouchDispatcher.m in Sources */,
 				DD3796FA1C23CD79005669C2 /* CCAction.m in Sources */,
 				DD3797091C23CD79005669C2 /* CCActionGrid3D.m in Sources */,
@@ -963,6 +1060,7 @@
 				DD3797911C23CD79005669C2 /* CCSprite.m in Sources */,
 				DD3797FA1C23CD7A005669C2 /* CCVertex.m in Sources */,
 				DD3797D71C23CD79005669C2 /* CCTouchHandler.m in Sources */,
+				DD3798701C23D307005669C2 /* GameScene.m in Sources */,
 				DD37983D1C23CD7A005669C2 /* mat4.c in Sources */,
 				DD3798411C23CD7A005669C2 /* plane.c in Sources */,
 				DD3797151C23CD79005669C2 /* CCActionPageTurn3D.m in Sources */,
@@ -977,6 +1075,7 @@
 				DD3798371C23CD7A005669C2 /* mat4stack.c in Sources */,
 				DD3797591C23CD79005669C2 /* CCMotionStreak.m in Sources */,
 				DD3797211C23CD79005669C2 /* CCAnimation.m in Sources */,
+				DD3798651C23CFEF005669C2 /* MenuScene.m in Sources */,
 				DD37970C1C23CD79005669C2 /* CCActionInstant.m in Sources */,
 				DD37970F1C23CD79005669C2 /* CCActionInterval.m in Sources */,
 				DD3798491C23CD7A005669C2 /* vec2.c in Sources */,
@@ -986,7 +1085,6 @@
 				DD3797AF1C23CD79005669C2 /* CCTMXObjectGroup.m in Sources */,
 				DD3797F41C23CD7A005669C2 /* CCProfiling.m in Sources */,
 				DD37983B1C23CD7A005669C2 /* mat3.c in Sources */,
-				DD3798581C23CD7A005669C2 /* HelloWorldLayer.m in Sources */,
 				DD3798151C23CD7A005669C2 /* CDOpenALSupport.m in Sources */,
 				DD37978E1C23CD79005669C2 /* ccShaders.m in Sources */,
 				DD3797561C23CD79005669C2 /* CCMenuItem.m in Sources */,
@@ -1065,16 +1163,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BigHomework/Prefix.pch;
 				HEADER_SEARCH_PATHS = "\"BigHomework/libs/kazmath/include\"";
 				INFOPLIST_FILE = BigHomework/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cccompany.BigHomework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1084,15 +1185,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BigHomework/Prefix.pch;
 				HEADER_SEARCH_PATHS = "\"BigHomework/libs/kazmath/include\"";
 				INFOPLIST_FILE = BigHomework/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cccompany.BigHomework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

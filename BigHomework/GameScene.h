@@ -6,8 +6,13 @@
 //
 //
 
-#ifndef GameScene_h
-#define GameScene_h
+#import "cocos2d.h"
 
+@interface GameScene : CCLayer
+{
+    
+}
 
-#endif /* GameScene_h */
++(CCScene *) scene;
++(CGPoint) locationFromTouch:(UITouch*)touch;
+@end

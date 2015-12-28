@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[SquareCache initSquares]:SquareCache.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[SquareCache recycleSquare]:SquareCache.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[square numberOfRunningActions]">
+            </PersistentString>
+            <PersistentString
+               value = "removing.count">
+            </PersistentString>
+            <PersistentString
+               value = "removing.count == 0">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

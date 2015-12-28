@@ -6,8 +6,32 @@
 //
 //
 
-#ifndef SquareCache_h
-#define SquareCache_h
+#import "cocos2d.h"
 
-
-#endif /* SquareCache_h */
+@interface SquareCache : CCNode <CCTargetedTouchDelegate>
+{
+    CCSpriteBatchNode* batch;
+    CCSprite* astronaut;
+    CCSprite* outframe;
+    CCArray* squares;
+    CCArray* matrix;
+    CCArray* removing;
+    CCAnimate* eat;
+    
+    BOOL isAnimating;
+    BOOL isTouchEnable;
+    BOOL needFill;
+    BOOL isInit;
+    BOOL isRemoving;
+    
+    CGPoint squareSrc;
+    CGPoint squareDest;
+    CGRect boundingBox;
+    
+    ccTime time;
+    int temperature;
+    int electricity;
+    int signal;
+}
+@property CGRect boundingBox;
+@end

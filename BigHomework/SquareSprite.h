@@ -6,8 +6,40 @@
 //
 //
 
-#ifndef SquareSprite_h
-#define SquareSprite_h
+#import "cocos2d.h"
 
+typedef enum {
+    DefenceSquare = 0,
+    Electriciysquare,
+    HeatSquare,
+    FoodSquare,
+    Watersquare,
+    SignalSquare,
+    MAXSquare,
+}SquareTypes;
 
-#endif /* SquareSprite_h */
+@interface SquareSprite : CCSprite
+{
+    SquareTypes squareType;
+    BOOL toBeRemove;
+    BOOL generateSignal;
+    BOOL isUsing;
+    BOOL generateSpecial;
+    
+    //special
+    BOOL canMerge;
+    BOOL canMove;
+    BOOL isSpecial;
+}
+@property BOOL canMove;
+@property BOOL isUsing;
+@property BOOL isSpecial;
+@property BOOL generateSpecial;
+@property (nonatomic, readonly) BOOL canMerge;
+@property (nonatomic, readonly) SquareTypes squareType;
+@property BOOL toBeRemove;
+@property BOOL generateSignal;
++(id) createSquare;
+-(void) setType:(SquareTypes)type canMove:(BOOL)move isSpecial:(BOOL)special;
+
+@end
