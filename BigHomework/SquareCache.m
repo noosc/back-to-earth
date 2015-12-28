@@ -26,6 +26,7 @@ static const int matrixSize = 8;
         
         CCSprite* outFrame = [CCSprite spriteWithSpriteFrameName:@"outframe.png"];
         [batch addChild:outFrame z:-1];
+        [self addChild:batch];
         
         isAnimating = YES;
         isTouchEnable = NO;
@@ -34,11 +35,11 @@ static const int matrixSize = 8;
         needFill = NO;
         squareSrc = ccp(-1, -1);
         squareDest = ccp(-1, -1);
+        
         time = 180;
         temperature = 5;
         electricity = 0;
         signal = 0;
-        [self addChild:batch];
         
         squares = [[CCArray alloc] initWithCapacity:numSquare];
         for (int i = 0; i < numSquare; i++) {
@@ -53,6 +54,14 @@ static const int matrixSize = 8;
             [matrix addObject:column];
         }
         removing = [[CCArray alloc] initWithCapacity:15];
+        usedSprites = [[CCArray alloc] initWithCapacity:5];
+        lineSprites = [[CCArray alloc] initWithCapacity:numSquare];
+        for (int i = 0; i < numSquare; i++) {
+            CCSprite* sprite = [CCSprite spriteWithSpriteFrameName:@"hleft.png"];
+            sprite.visible = NO;
+            [lineSprites addObject:sprite];
+            [batch addChild:sprite z:11];
+        }
         [self resetSquares];
         
         //mask
@@ -212,13 +221,46 @@ static const int matrixSize = 8;
     CCARRAY_FOREACH(squares, square)
     {
         if (square.isUsing == NO) {
-            isAnimating = YES;
             [square setType:type canMove:move isSpecial:special];
             [[matrix objectAtIndex:column] insertObject:square atIndex:row];
             square.isUsing = YES;
             return;
         }
     }
+}
+
+-(CCSprite*) lineSpriteWithType:(lineTypes)type
+{
+    CCSprite* sprite;
+    CCARRAY_FOREACH(lineSprites, sprite)
+    {
+        if (sprite.visible == NO) {
+            sprite.scale = 1;
+            sprite.visible = YES;
+            NSString* frameName;
+            switch (type) {
+                case hleft:
+                    frameName = @"hleft.png";
+                    break;
+                case hright:
+                    frameName = @"hright.png";
+                    break;
+                case vdown:
+                    frameName = @"vdown.png";
+                    break;
+                case vup:
+                    frameName = @"vup.png";
+                    break;
+                    
+                default:
+                    [NSException exceptionWithName:@"lineSprite exception!" reason:@"Unhandled sprite type" userInfo:nil];
+                    break;
+            }
+            sprite.displayFrame = [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:frameName];
+            break;
+        }
+    }
+    return sprite;
 }
 
 -(void) removeAnimate
@@ -234,6 +276,25 @@ static const int matrixSize = 8;
         square.isUsing = YES;
         if (square.squareType == SignalSquare) {
             [square runAction:[CCMoveBy actionWithDuration:0.2 position:ccp(0, -square.contentSize.height)]];
+        }else if (square.squareType == DefenceSquare && square.isSpecial){
+            CCSprite* hl = [self lineSpriteWithType:hleft];
+            CCSprite* hr = [self lineSpriteWithType:hright];
+            hl.position = square.position;
+            hr.position = square.position;
+            CGPoint leftEnd = square.position;
+            CGPoint rightEnd = square.position;
+            leftEnd.x = [self positionOfItemAtRow:0 Column:-8].x;
+            rightEnd.x = [self positionOfItemAtRow:0 Column:15].x;
+            CCEaseOut* extendLeft = [CCEaseOut actionWithAction:[CCScaleTo actionWithDuration:1.5 scaleX:8 scaleY:0.7] rate:3];
+            CCEaseOut* extendRight = [CCEaseOut actionWithAction:[CCScaleTo actionWithDuration:1.5 scaleX:8 scaleY:0.7] rate:3];
+            CCEaseOut* moveLeft = [CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:1.5 position:leftEnd] rate:3];
+            CCEaseOut* moveRight = [CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:1.5 position:rightEnd] rate:3];
+            [hl runAction:extendLeft];
+            [hl runAction:moveLeft];
+            [hr runAction:extendRight];
+            [hr runAction:moveRight];
+            [usedSprites addObject:hl];
+            [usedSprites addObject:hr];
         }else{
             [square runAction:[CCScaleTo actionWithDuration:0.2 scale:0]];
             NSString* file = [NSString stringWithFormat:@"remove-%i.plist", square.squareType + 1];
@@ -245,8 +306,13 @@ static const int matrixSize = 8;
     }
 }
 
+-(void) onCallFunc:(id) sender{
+    CCLOG(@"func!!!!!!!!!!!");
+}
+
 -(void) dropSquareAtRow:(int)row Column:(int)column From:(CGPoint)startPoint
 {
+    isAnimating = YES;
     SquareSprite* square = [self squareAtRow:row Column:column];
     CGPoint endPoint = [self positionOfItemAtRow:row Column:column];
     square.position = startPoint;
@@ -368,7 +434,7 @@ static const int matrixSize = 8;
                     square.toBeRemove = YES;
                     needFill = YES;
                 }
-                if (horizontal.y - horizontal.x + 1 >= 5) {
+                if (!isInit && horizontal.y - horizontal.x + 1 >= 5) {
                     if (squareSrc.x == i) {
                         [self squareAtRow:squareSrc.x Column:squareSrc.y].generateSignal = YES;
                     }else if (squareDest.x == i) {
@@ -376,7 +442,7 @@ static const int matrixSize = 8;
                     }else {
                         [self squareAtRow:i Column:horizontal.y].generateSignal = YES;
                     }
-                }else if (horizontal.y - horizontal.x + 1 == 4){
+                }else if (!isInit && horizontal.y - horizontal.x + 1 == 4){
                     if (squareSrc.x == i) {
                         [self squareAtRow:squareSrc.x Column:squareSrc.y].generateSpecial = YES;
                     }else if (squareDest.x == i) {
@@ -392,7 +458,7 @@ static const int matrixSize = 8;
                     square.toBeRemove = YES;
                     needFill = YES;
                 }
-                if (vertical.y - vertical.x + 1 >= 5) {
+                if (!isInit && vertical.y - vertical.x + 1 >= 5) {
                     if (squareSrc.y == j) {
                         [self squareAtRow:squareSrc.x Column:squareSrc.y].generateSignal = YES;
                     }else if (squareDest.y == j){
@@ -400,7 +466,7 @@ static const int matrixSize = 8;
                     }else{
                         [self squareAtRow:vertical.x Column:j].generateSignal = YES;
                     }
-                }else if (vertical.y - vertical.x + 1 == 4){
+                }else if (!isInit && vertical.y - vertical.x + 1 == 4){
                     if (squareSrc.y == j) {
                         [self squareAtRow:squareSrc.x Column:squareSrc.y].generateSpecial = YES;
                     }else if (squareDest.y == j){
@@ -436,7 +502,7 @@ static const int matrixSize = 8;
             if (square.toBeRemove == YES) {
                 
                 //add to removeArray except special to be generate
-                if (!isInit && square.visible == YES && square.generateSpecial == NO && square.generateSignal == NO) {
+                if (!isInit && square.visible == YES) {
                     [removing addObject:square];
                 }
             }
@@ -446,7 +512,7 @@ static const int matrixSize = 8;
     [self fillVacancies];
 }
 
--(void) recycleSquare
+-(void) recycle
 {
     SquareSprite* square;
     CCARRAY_FOREACH(removing, square)
@@ -457,12 +523,20 @@ static const int matrixSize = 8;
             square.isSpecial = NO;
             square.scale = 1;
             square.visible = NO;
-            square.isUsing = NO;
             [removing removeObject:square];
         }
     }
     if (removing.count == 0) {
         isRemoving = NO;
+    }
+    CCSprite* sprite;
+    CCARRAY_FOREACH(usedSprites, sprite)
+    {
+        if ([sprite numberOfRunningActions] == 0) {
+            sprite.visible = NO;
+            sprite.scale = 1;
+            [usedSprites removeObject:sprite];
+        }
     }
 }
 
@@ -480,7 +554,7 @@ static const int matrixSize = 8;
             if (square.toBeRemove == YES) {
                 
                 //update status
-                if (!isInit &&square.toBeRemove == YES) {
+                if (!isInit && square.toBeRemove == YES) {
                     if (square.squareType == FoodSquare) {
                         time += 3;
                     }
@@ -513,16 +587,21 @@ static const int matrixSize = 8;
                 
                 vacancies++;
                 square.toBeRemove = NO;
-                if (!isInit && square.generateSignal == YES) {
+                if (square.generateSignal == YES) {
                     square.generateSignal = NO;
                     [square setType:SignalSquare canMove:YES isSpecial:NO];
+                    square.visible = YES;
+                    square.scale = 1;
                     vacancies--;
-                }else if (!isInit && square.generateSpecial == YES){
+                }else if (square.generateSpecial == YES){
                     square.generateSpecial = NO;
                     [square setType:square.squareType canMove:YES isSpecial:YES];
+                    square.visible = YES;
+                    square.scale = 1;
                     vacancies--;
                 }else {
                     [colum removeObjectAtIndex:i];
+                    square.isUsing = NO;
                 }
                 i--;
             }else if (!isInit && vacancies > 0){
@@ -558,7 +637,7 @@ static const int matrixSize = 8;
 
 - (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    if (squareSrc.x == -1 || !isTouchEnable) {
+    if (squareSrc.x == -1 || squareSrc.y == -1 || !isTouchEnable) {
         return;
     }
     CGPoint touchLocation = [GameScene locationFromTouch:touch];
@@ -696,7 +775,7 @@ static const int matrixSize = 8;
             //no square can be move to remove
             [self resetSquares];
         }
-        [self recycleSquare];
+        [self recycle];
         //CCLOG(@"is not animating");
     }
 }
@@ -706,6 +785,8 @@ static const int matrixSize = 8;
     [squares release];
     [matrix release];
     [removing release];
+    [usedSprites release];
+    [lineSprites release];
     [super dealloc];
 }
 @end

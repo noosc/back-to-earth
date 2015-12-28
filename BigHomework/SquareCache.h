@@ -8,6 +8,14 @@
 
 #import "cocos2d.h"
 
+typedef enum {
+    hleft = 0,
+    hright,
+    vdown,
+    vup,
+    MAX,
+}lineTypes;
+
 @interface SquareCache : CCNode <CCTargetedTouchDelegate>
 {
     CCSpriteBatchNode* batch;
@@ -16,6 +24,8 @@
     CCArray* squares;
     CCArray* matrix;
     CCArray* removing;
+    CCArray* usedSprites;
+    CCArray* lineSprites;
     CCAnimate* eat;
     
     BOOL isAnimating;
