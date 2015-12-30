@@ -9,6 +9,7 @@
 #import "SquareCache.h"
 #import "SquareSprite.h"
 #import "GameScene.h"
+#import "LoseScene.h"
 
 @implementation SquareCache
 @synthesize boundingBox;
@@ -33,6 +34,7 @@ static const int matrixSize = 8;
         isInit = YES;
         isRemoving = NO;
         needFill = NO;
+        gameOver = NO;
         squareSrc = ccp(-1, -1);
         squareDest = ccp(-1, -1);
         
@@ -40,6 +42,11 @@ static const int matrixSize = 8;
         temperature = 5;
         electricity = 0;
         signal = 0;
+        timeMax = 180;
+        temperatureMax = 5;
+        electricityMax = 51;
+        
+        delay = 1;
         
         squares = [[CCArray alloc] initWithCapacity:numSquare];
         for (int i = 0; i < numSquare; i++) {
@@ -65,7 +72,7 @@ static const int matrixSize = 8;
         [self resetSquares];
         
         //mask
-        CCSprite* mask = [CCSprite spriteWithFile:@"mask.png"];
+        mask = [CCSprite spriteWithSpriteFrameName:@"mask.png"];
         mask.position = ccp(0, 124);
         [self addChild:mask z:2];
         
@@ -73,6 +80,76 @@ static const int matrixSize = 8;
         astronaut = [CCSprite spriteWithSpriteFrameName:@"astronaut.png"];
         astronaut.position = ccp(0, 124);
         [self addChild:astronaut z:3];
+        
+        //status
+        status = [CCSprite spriteWithSpriteFrameName:@"status.png"];
+        status.position = ccp(0, 124);
+        [self addChild:status z:3];
+        
+        foodLeft = [CCSprite spriteWithSpriteFrameName:@"foodLeft.png"];
+        foodLeft.position = ccp(46.5f, 524.7f);
+        [status addChild:foodLeft z:4];
+        
+        foodMiddle = [CCSprite spriteWithSpriteFrameName:@"foodMiddle.png"];
+        foodMiddle.position = ccp(46.5f, 524.7f);
+        foodMiddle.anchorPoint = ccp(0, 0.5f);
+        foodMiddle.scaleX = 1;
+        [status addChild:foodMiddle z:3];
+        
+        foodRight = [CCSprite spriteWithSpriteFrameName:@"foodRight.png"];
+        CGPoint position = foodMiddle.position;
+        position.x += foodMiddle.contentSize.width * foodMiddle.scaleX;
+        foodRight.anchorPoint = ccp(0.3f, 0.5f);
+        foodRight.position = position;
+        [status addChild:foodRight z:4];
+        
+        electricityLeft = [CCSprite spriteWithSpriteFrameName:@"electricityLeft.png"];
+        electricityLeft.position = ccp(46.5f, 508.7f);
+        electricityLeft.visible = NO;
+        [status addChild:electricityLeft z:4];
+        
+        electricityMiddle = [[CCArray alloc] initWithCapacity:electricityMax];
+        for (int i = 0; i < electricityMax; i++) {
+            CCSprite* sprite = [CCSprite spriteWithSpriteFrameName:@"electricityMiddle.png"];
+            sprite.position = ccp(46.5f + i * sprite.contentSize.width, 508.7f);
+            sprite.anchorPoint = ccp(0, 0.5f);
+            sprite.visible = NO;
+            [status addChild:sprite z:5];
+            [electricityMiddle addObject:sprite];
+        }
+        
+        electricityRight = [CCSprite spriteWithSpriteFrameName:@"electricityRight.png"];
+        electricityRight.anchorPoint = ccp(0.1, 0.5f);
+        electricityRight.visible = NO;
+        [status addChild:electricityRight z:4];
+        
+        temperatureLeft = [CCSprite spriteWithSpriteFrameName:@"foodLeft.png"];
+        temperatureLeft.position = ccp(46.5f, 492.2f);
+        [status addChild:temperatureLeft z:4];
+        
+        temperatureMiddle = [[CCArray alloc] initWithCapacity:temperatureMax];
+        for (int i = 0; i < temperatureMax; i++) {
+            CCSprite* sprite = [CCSprite spriteWithSpriteFrameName:@"temperatureMiddle.png"];
+            sprite.position = ccp(46.5f + i * sprite.contentSize.width, 492.2f);
+            sprite.anchorPoint = ccp(0, 0.5f);
+            [status addChild:sprite z:3];
+            [temperatureMiddle addObject:sprite];
+        }
+        temperatureRight = [CCSprite spriteWithSpriteFrameName:@"foodRight.png"];
+        position = ((CCSprite*)[temperatureMiddle objectAtIndex:temperature -1]).position;
+        position.x += ((CCSprite*)[temperatureMiddle objectAtIndex:temperature -1]).contentSize.width;
+        temperatureRight.position = position;
+        temperatureRight.anchorPoint = ccp(0.3f, 0.5f);
+        [status addChild:temperatureRight z:4];
+        
+        ownSignal = [[CCArray alloc] initWithCapacity:5];
+        for (int i = 0; i < 5; i++) {
+            CCSprite* sprite = [CCSprite spriteWithSpriteFrameName:@"ownSignal.png"];
+            sprite.position = ccp(49.5f + i * 20.5, 467.5f);
+            sprite.visible = NO;
+            [status addChild:sprite z:3];
+            [ownSignal addObject:sprite];
+        }
         
         [self scheduleUpdate];
         [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
@@ -221,7 +298,7 @@ static const int matrixSize = 8;
     CCARRAY_FOREACH(squares, square)
     {
         if (square.isUsing == NO) {
-            [square setType:type canMove:move isSpecial:special];
+            [square setType:type isSpecial:special];
             [[matrix objectAtIndex:column] insertObject:square atIndex:row];
             square.isUsing = YES;
             return;
@@ -388,6 +465,9 @@ static const int matrixSize = 8;
 
 -(void)checkSpecial
 {
+    if (gameOver) {
+        return;
+    }
     BOOL needRecurse = NO;
     for (int i = 0; i < matrixSize; i++) {
         for (int j = 0; j < matrixSize; j++) {
@@ -542,60 +622,43 @@ static const int matrixSize = 8;
 
 -(void) fillVacancies
 {
-    if (isRemoving) {
+    if (gameOver || isRemoving) {
         return;
     }
     isAnimating = YES;
+    int increaseTime = 0;
+    int increaseTemperature = 0;
+    int increaseElectricity = 0;
     for (int j = 0; j < matrixSize; j++) {
         int vacancies = 0;
         CCArray* colum = (CCArray*)[matrix objectAtIndex:j];
         for (int i = 0; i < colum.count ; i++) {
             SquareSprite* square = (SquareSprite*)[colum objectAtIndex:i];
             if (square.toBeRemove == YES) {
-                
-                //update status
-                if (!isInit && square.toBeRemove == YES) {
-                    if (square.squareType == FoodSquare) {
-                        time += 3;
-                    }
+                //calculate status increasement
+                if (!isInit) {
                     if (square.squareType == Electriciysquare) {
-                        electricity++;
-                    }
-                    if (square.squareType == HeatSquare) {
-                        temperature++;
-                    }
-                    if (square.squareType == SignalSquare) {
+                        increaseElectricity++;
+                    }else if (square.squareType == HeatSquare) {
+                        increaseTemperature++;
+                    }else if (square.squareType == SignalSquare) {
                         signal++;
-                    }
-                    if (square.squareType == FoodSquare) {
-                        NSMutableArray* frames = [NSMutableArray arrayWithCapacity:3];
-                        for (int i = 0; i < 3; i++) {
-                            NSString* file = [NSString stringWithFormat:@"eat%i.png", i+1];
-                            CCSpriteFrame* frame = [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:file];
-                            [frames addObject:frame];
-                        }
-                        [frames addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:@"astronaut.png"]];
-                        CCAnimation* anim = [CCAnimation animationWithSpriteFrames:frames delay:0.2f];
-                        eat = [CCAnimate actionWithAnimation:anim];
-                        [astronaut runAction:eat];
+                    }else if (square.squareType == FoodSquare) {
+                        increaseTime += 2;
                     }
                 }
-                CCLOG(@"!!!time: %f", time);
-                CCLOG(@"!!!temperature: %i", temperature);
-                CCLOG(@"!!!electricity: %i", electricity);
-                CCLOG(@"!!!signal: %i", signal);
                 
                 vacancies++;
                 square.toBeRemove = NO;
                 if (square.generateSignal == YES) {
                     square.generateSignal = NO;
-                    [square setType:SignalSquare canMove:YES isSpecial:NO];
+                    [square setType:SignalSquare isSpecial:NO];
                     square.visible = YES;
                     square.scale = 1;
                     vacancies--;
                 }else if (square.generateSpecial == YES){
                     square.generateSpecial = NO;
-                    [square setType:square.squareType canMove:YES isSpecial:YES];
+                    [square setType:square.squareType isSpecial:YES];
                     square.visible = YES;
                     square.scale = 1;
                     vacancies--;
@@ -622,6 +685,70 @@ static const int matrixSize = 8;
     needFill = NO;
     squareSrc = ccp(-1, -1);
     squareDest = ccp(-1, -1);
+    
+    //update status
+    if (increaseTime > 0) {
+        time += increaseTime;
+        if (time > timeMax) {
+            time = timeMax;
+        }
+        
+        NSMutableArray* frames = [NSMutableArray arrayWithCapacity:3];
+        for (int i = 0; i < 3; i++) {
+            NSString* file = [NSString stringWithFormat:@"eat%i.png", i+1];
+            CCSpriteFrame* frame = [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:file];
+            [frames addObject:frame];
+        }
+        [frames addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:@"astronaut.png"]];
+        CCAnimation* anim = [CCAnimation animationWithSpriteFrames:frames delay:0.2f];
+        CCAnimate* eat = [CCAnimate actionWithAnimation:anim];
+        [astronaut runAction:eat];
+    }
+    if (increaseTemperature > 0) {
+        temperature += increaseTemperature;
+        if (temperature > 5) {
+            temperature = 5;
+        }
+    }
+    if (increaseElectricity > 0) {
+        electricity += increaseElectricity;
+        if (electricity >= electricityMax) {
+            signal++;
+            electricity %= electricityMax;
+        }
+        if (electricity > 0) {
+            electricityLeft.visible = YES;
+            CGPoint position = ((CCSprite*)[electricityMiddle objectAtIndex:electricity - 1]).position;
+            position.x += ((CCSprite*)[electricityMiddle objectAtIndex:0]).contentSize.width;
+            electricityRight.position = position;
+            electricityRight.visible = YES;
+        }else {
+            electricityLeft.visible = NO;
+            electricityRight.visible = NO;
+        }
+        for (int i = 0; i < electricity; i++) {
+            CCSprite* sprite = (CCSprite*)[electricityMiddle objectAtIndex:i];
+            sprite.visible = YES;
+        }
+        for (int i = electricity; i < electricityMax; i++) {
+            CCSprite* sprite = (CCSprite*)[electricityMiddle objectAtIndex:i];
+            sprite.visible = NO;
+        }
+    }
+    if (signal > 0) {
+        for (int i = 0; i < signal; i++) {
+            CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex:i];
+            sprite.visible = YES;
+        }
+        for (int i = signal; i < 5; i++) {
+            CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex:i];
+            sprite.visible = NO;
+        }
+    }
+    CCLOG(@"!!!time: %f", time);
+    CCLOG(@"!!!temperature: %i", temperature);
+    CCLOG(@"!!!electricity: %i", electricity);
+    CCLOG(@"!!!signal: %i", signal);
 }
 
 -(BOOL) ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event
@@ -706,7 +833,7 @@ static const int matrixSize = 8;
 
 -(void) swapSquare
 {
-    if (isRemoving || isAnimating || squareSrc.x == -1 || squareDest.x == -1) {
+    if (gameOver || isRemoving || isAnimating || squareSrc.x == -1 || squareDest.x == -1) {
         return;
     }
     isAnimating = YES;
@@ -730,11 +857,16 @@ static const int matrixSize = 8;
     CGPoint verticalDest = [self existVerticalChainAt:squareDest.x Column:squareDest.y];
     if (horizontalSrc.y - horizontalSrc.x + 1 >= 3 || verticalSrc.y - verticalSrc.x + 1 >= 3 || horizontalDest.y - horizontalDest.x + 1 >= 3 || verticalDest.y - verticalDest.x + 1 >= 3) {
         //valid movement
-        temperature--;
         CCMoveTo* moveSrc = [CCMoveTo actionWithDuration:0.4 position:[self positionOfItemAtRow:squareDest.x Column:squareDest.y]];
         CCMoveTo* moveDest = [CCMoveTo actionWithDuration:0.4 position:[self positionOfItemAtRow:squareSrc.x Column:squareSrc.y]];
         [src runAction:[CCEaseInOut actionWithAction:moveSrc rate:3]];
         [dest runAction:[CCEaseInOut actionWithAction:moveDest rate:3]];
+        
+        //temperature decay in every turn
+        temperature--;
+        if (temperature < 0) {
+            temperature = 0;
+        }
     }else{
         //invalid movement
         [srcColumn removeObjectAtIndex:squareSrc.x];
@@ -756,6 +888,7 @@ static const int matrixSize = 8;
 -(void) update:(ccTime)delta
 {
     time -= delta;
+    
     if (isAnimating) {
         isAnimating = NO;
         for (int i = 0; i < matrixSize; i++) {
@@ -778,10 +911,70 @@ static const int matrixSize = 8;
         [self recycle];
         //CCLOG(@"is not animating");
     }
+    
+    //check temperature
+    if (temperature > 0) {
+        temperatureLeft.visible = YES;
+        CGPoint position = ((CCSprite*)[temperatureMiddle objectAtIndex:temperature -1]).position;
+        position.x += ((CCSprite*)[temperatureMiddle objectAtIndex:temperature -1]).contentSize.width;
+        temperatureRight.position = position;
+        temperatureRight.visible = YES;
+    }else {
+        temperatureLeft.visible = NO;
+        temperatureRight.visible = NO;
+    }
+    for (int i = 0; i < temperature; i++) {
+        CCSprite* sprite = (CCSprite*)[temperatureMiddle objectAtIndex:i];
+        sprite.visible = YES;
+    }
+    for (int i = temperature; i < temperatureMax; i++) {
+        CCSprite* sprite = (CCSprite*)[temperatureMiddle objectAtIndex:i];
+        sprite.visible = NO;
+    }
+    
+    //check time
+    if (time < 0) {
+        foodLeft.visible = NO;
+        foodRight.visible = NO;
+        foodMiddle.visible = NO;
+        mask.visible = NO;
+        //game over
+        if (!gameOver) {
+            gameOver = YES;
+            [batch runAction:[CCEaseIn actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(0, -boundingBox.size.height)] rate:3]];
+            [status runAction:[CCEaseIn actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(0, boundingBox.size.height)] rate:3]];
+            
+            NSMutableArray* frames = [NSMutableArray arrayWithCapacity:4];
+            for (int i = 0; i < 4; i++) {
+                NSString* file = [NSString stringWithFormat:@"dead%i.png", i+1];
+                CCSpriteFrame* frame = [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:file];
+                [frames addObject:frame];
+            }
+            CCAnimation* anim = [CCAnimation animationWithSpriteFrames:frames delay:0.2f];
+            CCAnimate* dead = [CCAnimate actionWithAnimation:anim];
+            [astronaut stopAllActions];
+            [astronaut runAction:dead];
+        }
+        if (batch.numberOfRunningActions == 0 && status.numberOfRunningActions == 0 && astronaut.numberOfRunningActions == 0) {
+            delay -= delta;
+            if (delay < 0) {
+                [[CCTouchDispatcher sharedDispatcher] removeDelegate:self];
+                [[CCDirector sharedDirector] replaceScene: [CCTransitionFade transitionWithDuration:0.5 scene:[LoseScene scene] withColor:ccWHITE]];
+            }
+        }
+    }else {
+        foodMiddle.scaleX = time/timeMax;
+        CGPoint position = foodMiddle.position;
+        position.x += foodMiddle.contentSize.width * foodMiddle.scaleX;
+        foodRight.position = position;
+    }
 }
 
 -(void) dealloc
 {
+    [electricityMiddle release];
+    [temperatureMiddle release];
+    [ownSignal release];
     [squares release];
     [matrix release];
     [removing release];

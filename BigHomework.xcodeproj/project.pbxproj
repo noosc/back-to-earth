@@ -156,6 +156,7 @@
 		DD3798B51C2D0D6A005669C2 /* start3.png in Resources */ = {isa = PBXBuildFile; fileRef = DD3798AF1C2D0D6A005669C2 /* start3.png */; };
 		DD3798B81C2D2349005669C2 /* go.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD3798B61C2D2349005669C2 /* go.plist */; };
 		DD3798B91C2D2349005669C2 /* go.png in Resources */ = {isa = PBXBuildFile; fileRef = DD3798B71C2D2349005669C2 /* go.png */; };
+		DD3798BC1C33CE45005669C2 /* LoseScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3798BB1C33CE45005669C2 /* LoseScene.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -447,6 +448,8 @@
 		DD3798AF1C2D0D6A005669C2 /* start3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = start3.png; path = Resources/start3.png; sourceTree = "<group>"; };
 		DD3798B61C2D2349005669C2 /* go.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = go.plist; path = Resources/go.plist; sourceTree = "<group>"; };
 		DD3798B71C2D2349005669C2 /* go.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = go.png; path = Resources/go.png; sourceTree = "<group>"; };
+		DD3798BA1C33CE0C005669C2 /* LoseScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoseScene.h; sourceTree = "<group>"; };
+		DD3798BB1C33CE45005669C2 /* LoseScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoseScene.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -505,6 +508,8 @@
 		DD3796DB1C23CD79005669C2 /* BigHomework */ = {
 			isa = PBXGroup;
 			children = (
+				DD3798BA1C33CE0C005669C2 /* LoseScene.h */,
+				DD3798BB1C33CE45005669C2 /* LoseScene.m */,
 				DD37987E1C23E44C005669C2 /* SquareCache.h */,
 				DD37987F1C23E523005669C2 /* SquareCache.m */,
 				DD3798751C23D94E005669C2 /* SquareSprite.h */,
@@ -1113,6 +1118,7 @@
 				DD3797241C23CD79005669C2 /* CCAnimationCache.m in Sources */,
 				DD3797461C23CD79005669C2 /* CCLabelAtlas.m in Sources */,
 				DD3797371C23CD79005669C2 /* CCDrawingPrimitives.m in Sources */,
+				DD3798BC1C33CE45005669C2 /* LoseScene.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

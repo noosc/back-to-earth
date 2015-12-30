@@ -40,6 +40,6 @@ typedef enum {
 @property BOOL toBeRemove;
 @property BOOL generateSignal;
 +(id) createSquare;
--(void) setType:(SquareTypes)type canMove:(BOOL)move isSpecial:(BOOL)special;
+-(void) setType:(SquareTypes)type isSpecial:(BOOL)special;
 
 @end

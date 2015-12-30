@@ -23,83 +23,59 @@
     generateSignal = NO;
     isUsing = NO;
     generateSpecial = NO;
+    canMove = YES;
     
     if (self = [super init]) {
-        [self setType:FoodSquare canMove:YES isSpecial:NO];
+        [self setType:FoodSquare isSpecial:NO];
     }
     return self;
 }
 
--(void) setType:(SquareTypes)type canMove:(BOOL)move isSpecial:(BOOL)special
+-(void) setType:(SquareTypes)type isSpecial:(BOOL)special
 {
     squareType = type;
-    canMove = move;
     canMerge = YES;
     isSpecial = special;
     
     NSString* frameName;
     switch (type) {
         case FoodSquare:
-            if (move && !special) {
+            if (!special) {
                 frameName = @"square-food.png";
-            }else if (move && special){
+            }else {
                 frameName = @"special-food.png";
-            }else if (!move && !special){
-                frameName = @"frozen-food.png";
-            }else if (!move && special){
-                frameName = @"frozen-special-food.png";
             }
             break;
         case Watersquare:
-            if (move && !special) {
+            if (!special) {
                 frameName = @"square-water.png";
-            }else if (move && special){
+            }else {
                 frameName = @"special-water.png";
-            }else if (!move && !special){
-                frameName = @"frozen-water.png";
-            }else if (!move && special){
-                frameName = @"frozen-special-water.png";
             }
             break;
         case Electriciysquare:
-            if (move && !special) {
+            if (!special) {
                 frameName = @"square-electricity.png";
-            }else if (move && special){
+            }else {
                 frameName = @"special-electricity.png";
-            }else if (!move && !special){
-                frameName = @"frozen-electricity.png";
-            }else if (!move && special){
-                frameName = @"frozen-special-electricity.png";
             }
             break;
         case SignalSquare:
-            if (move) {
-                frameName = @"square-signal.png";
-            }else {
-                frameName = @"frozen-signal.png";
-            }
+            frameName = @"square-signal.png";
             canMerge = NO;
             break;
         case DefenceSquare:
-            if (move && !special) {
+            if (!special) {
                 frameName = @"square-defence.png";
-            }else if (move && special){
+            }else {
                 frameName = @"special-defence.png";
-            }else if (!move && !special){
-                frameName = @"frozen-defence.png";
-            }else if (!move && special){
-                frameName = @"frozen-special-defence.png";
             }
             break;
         case HeatSquare:
-            if (move && !special) {
+            if (!special) {
                 frameName = @"square-heat.png";
-            }else if (move && special){
+            }else {
                 frameName = @"special-heat.png";
-            }else if (!move && !special){
-                frameName = @"frozen-heat.png";
-            }else if (!move && special){
-                frameName = @"frozen-special-heat.png";
             }
             break;
         default:

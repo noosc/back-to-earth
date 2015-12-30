@@ -21,18 +21,30 @@ typedef enum {
     CCSpriteBatchNode* batch;
     CCSprite* astronaut;
     CCSprite* outframe;
+    CCSprite* mask;
+    CCSprite* status;
+    CCSprite* foodLeft;
+    CCSprite* foodRight;
+    CCSprite* foodMiddle;
+    CCSprite* electricityLeft;
+    CCSprite* electricityRight;
+    CCArray* electricityMiddle;
+    CCSprite* temperatureLeft;
+    CCSprite* temperatureRight;
+    CCArray* temperatureMiddle;
+    CCArray* ownSignal;
     CCArray* squares;
     CCArray* matrix;
     CCArray* removing;
     CCArray* usedSprites;
     CCArray* lineSprites;
-    CCAnimate* eat;
     
     BOOL isAnimating;
     BOOL isTouchEnable;
     BOOL needFill;
     BOOL isInit;
     BOOL isRemoving;
+    BOOL gameOver;
     
     CGPoint squareSrc;
     CGPoint squareDest;
@@ -42,6 +54,11 @@ typedef enum {
     int temperature;
     int electricity;
     int signal;
+    int electricityMax;
+    int timeMax;
+    int temperatureMax;
+    
+    ccTime delay;
 }
 @property CGRect boundingBox;
 @end
