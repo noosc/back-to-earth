@@ -736,6 +736,9 @@ static const int matrixSize = 8;
         }
     }
     if (signal > 0) {
+        if (signal > 5) {
+            signal = 5;
+        }
         for (int i = 0; i < signal; i++) {
             CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex:i];
             sprite.visible = YES;
