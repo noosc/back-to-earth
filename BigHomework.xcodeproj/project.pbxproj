@@ -157,6 +157,9 @@
 		DD3798B81C2D2349005669C2 /* go.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD3798B61C2D2349005669C2 /* go.plist */; };
 		DD3798B91C2D2349005669C2 /* go.png in Resources */ = {isa = PBXBuildFile; fileRef = DD3798B71C2D2349005669C2 /* go.png */; };
 		DD3798BC1C33CE45005669C2 /* LoseScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3798BB1C33CE45005669C2 /* LoseScene.m */; };
+		DD45E0D11C3620D6006A8A26 /* WinScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DD45E0D01C3620D6006A8A26 /* WinScene.m */; };
+		DD45E0D71C365DB8006A8A26 /* startail.png in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0D61C365DB8006A8A26 /* startail.png */; };
+		DD45E0D91C365F56006A8A26 /* star.png in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0D81C365F56006A8A26 /* star.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -450,6 +453,10 @@
 		DD3798B71C2D2349005669C2 /* go.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = go.png; path = Resources/go.png; sourceTree = "<group>"; };
 		DD3798BA1C33CE0C005669C2 /* LoseScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoseScene.h; sourceTree = "<group>"; };
 		DD3798BB1C33CE45005669C2 /* LoseScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoseScene.m; sourceTree = "<group>"; };
+		DD45E0CF1C3620AA006A8A26 /* WinScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WinScene.h; sourceTree = "<group>"; };
+		DD45E0D01C3620D6006A8A26 /* WinScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WinScene.m; sourceTree = "<group>"; };
+		DD45E0D61C365DB8006A8A26 /* startail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = startail.png; path = Resources/startail.png; sourceTree = "<group>"; };
+		DD45E0D81C365F56006A8A26 /* star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = star.png; path = Resources/star.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -508,6 +515,8 @@
 		DD3796DB1C23CD79005669C2 /* BigHomework */ = {
 			isa = PBXGroup;
 			children = (
+				DD45E0CF1C3620AA006A8A26 /* WinScene.h */,
+				DD45E0D01C3620D6006A8A26 /* WinScene.m */,
 				DD3798BA1C33CE0C005669C2 /* LoseScene.h */,
 				DD3798BB1C33CE45005669C2 /* LoseScene.m */,
 				DD37987E1C23E44C005669C2 /* SquareCache.h */,
@@ -532,6 +541,8 @@
 		DD3796DC1C23CD79005669C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DD45E0D81C365F56006A8A26 /* star.png */,
+				DD45E0D61C365DB8006A8A26 /* startail.png */,
 				DD3798B61C2D2349005669C2 /* go.plist */,
 				DD3798B71C2D2349005669C2 /* go.png */,
 				DD3798AA1C2D0D6A005669C2 /* start1.plist */,
@@ -971,6 +982,7 @@
 				DD3796EC1C23CD79005669C2 /* Icon-Small.png in Resources */,
 				DD37986D1C23D280005669C2 /* background.png in Resources */,
 				DD3798B91C2D2349005669C2 /* go.png in Resources */,
+				DD45E0D71C365DB8006A8A26 /* startail.png in Resources */,
 				DD3796E01C23CD79005669C2 /* Default-Landscape~ipad.png in Resources */,
 				DD3796F01C23CD79005669C2 /* Icon.png in Resources */,
 				DD3798B11C2D0D6A005669C2 /* start1.png in Resources */,
@@ -978,6 +990,7 @@
 				DD3798B51C2D0D6A005669C2 /* start3.png in Resources */,
 				DD3798951C2ADC08005669C2 /* remove-5.plist in Resources */,
 				DD3796EA1C23CD79005669C2 /* Icon-Small-50.png in Resources */,
+				DD45E0D91C365F56006A8A26 /* star.png in Resources */,
 				DD3796EE1C23CD79005669C2 /* Icon-Small@2x.png in Resources */,
 				DD37986B1C23D278005669C2 /* Default-568h@2x.png in Resources */,
 				DD37987B1C23DF9B005669C2 /* outframe.png in Resources */,
@@ -1023,6 +1036,7 @@
 				DD3797311C23CD79005669C2 /* ccDeprecated.m in Sources */,
 				DD3797751C23CD79005669C2 /* CCRenderTexture.m in Sources */,
 				DD37981B1C23CD7A005669C2 /* SimpleAudioEngine.m in Sources */,
+				DD45E0D11C3620D6006A8A26 /* WinScene.m in Sources */,
 				DD37976E1C23CD79005669C2 /* CCParticleSystemQuad.m in Sources */,
 				DD3797A01C23CD79005669C2 /* CCTextureAtlas.m in Sources */,
 				DD3798551C23CD7A005669C2 /* AppDelegate.m in Sources */,
@@ -1228,6 +1242,7 @@
 				DD3798601C23CD7A005669C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

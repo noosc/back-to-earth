@@ -10,6 +10,7 @@
 #import "SquareSprite.h"
 #import "GameScene.h"
 #import "LoseScene.h"
+#import "WinScene.h"
 
 @implementation SquareCache
 @synthesize boundingBox;
@@ -33,8 +34,10 @@ static const int matrixSize = 8;
         isTouchEnable = NO;
         isInit = YES;
         isRemoving = NO;
+        frozen = NO;
         needFill = NO;
         gameOver = NO;
+        win = NO;
         squareSrc = ccp(-1, -1);
         squareDest = ccp(-1, -1);
         
@@ -55,13 +58,19 @@ static const int matrixSize = 8;
             [batch addChild:square z:1 tag:i];
             [squares addObject:square];
         }
+        
         matrix = [[CCArray alloc] initWithCapacity:matrixSize];
         for (int i = 0; i < matrixSize; i++) {
-            CCArray* column = [CCArray arrayWithCapacity:numSquare];
+            CCArray* column = [CCArray arrayWithCapacity:matrixSize];
             [matrix addObject:column];
         }
+        
+        //recycle container
         removing = [[CCArray alloc] initWithCapacity:15];
         usedSprites = [[CCArray alloc] initWithCapacity:5];
+        signalStars = [[CCArray alloc] initWithCapacity:5];
+        
+        //remove entire line animation
         lineSprites = [[CCArray alloc] initWithCapacity:numSquare];
         for (int i = 0; i < numSquare; i++) {
             CCSprite* sprite = [CCSprite spriteWithSpriteFrameName:@"hleft.png"];
@@ -71,15 +80,41 @@ static const int matrixSize = 8;
         }
         [self resetSquares];
         
+        //ices
+        ices = [[CCArray alloc] initWithCapacity:matrixSize * matrixSize];
+        for (int i = 0; i < matrixSize * matrixSize; i++) {
+            CCSprite* ice = [CCSprite spriteWithSpriteFrameName:@"ice.png"];
+            ice.visible = NO;
+            ice.anchorPoint = ccp(0, 0);
+            [ices addObject:ice];
+        }
+        
+        //stars
+        stars = [[CCArray alloc] initWithCapacity:matrixSize * matrixSize];
+        for (int i = 0; i < matrixSize * matrixSize; i++) {
+            CCSprite* star = [CCSprite spriteWithSpriteFrameName:@"star.png"];
+            star.visible = NO;
+            [stars addObject:star];
+            [batch addChild:star z:11];
+        }
+        
+        //streaks
+        streaks = [[CCArray alloc] initWithCapacity:matrixSize * matrixSize];
+        for (int i = 0; i < matrixSize * matrixSize; i++) {
+            CCMotionStreak* streak = [CCMotionStreak streakWithFade:0.5 minSeg:10 width:3 color:ccWHITE textureFilename:@"star.png"];
+            [streaks addObject:streak];
+            [self addChild:streak z:5];
+        }
+        
         //mask
         mask = [CCSprite spriteWithSpriteFrameName:@"mask.png"];
         mask.position = ccp(0, 124);
-        [self addChild:mask z:2];
+        [batch addChild:mask z:2];
         
         //astronaut
         astronaut = [CCSprite spriteWithSpriteFrameName:@"astronaut.png"];
         astronaut.position = ccp(0, 124);
-        [self addChild:astronaut z:3];
+        [self addChild:astronaut z:20];
         
         //status
         status = [CCSprite spriteWithSpriteFrameName:@"status.png"];
@@ -167,6 +202,7 @@ static const int matrixSize = 8;
         [square stopAllActions];
         square.visible = NO;
         square.isUsing = NO;
+        square.canMove = YES;
         square.toBeRemove = NO;
         square.generateSignal = NO;
         square.generateSpecial = NO;
@@ -194,6 +230,19 @@ static const int matrixSize = 8;
 -(SquareSprite*) squareAtRow:(int)row Column:(int)column
 {
     return (SquareSprite*)[[matrix objectAtIndex:column] objectAtIndex:row];
+}
+
+
+-(CGPoint) locationOfSquare:(SquareSprite*)square
+{
+    for (int i = 0; i < matrixSize; i++) {
+        for (int j = 0; j < matrixSize; j++) {
+            if ([self squareAtRow:i Column:j] == square) {
+                return ccp(i, j);
+            }
+        }
+    }
+    return ccp(-1, -1);
 }
 
 //return whether there are any 3-squence to be removed
@@ -306,6 +355,30 @@ static const int matrixSize = 8;
     }
 }
 
+-(CCSprite*) generateIce{
+    CCSprite* ice;
+    CCARRAY_FOREACH(ices, ice)
+    {
+        if (ice.visible == NO) {
+            ice.visible = YES;
+            return ice;
+        }
+    }
+    return nil;
+}
+
+-(CCSprite*) generateStar{
+    CCSprite* star;
+    CCARRAY_FOREACH(stars, star)
+    {
+        if (star.visible == NO) {
+            star.visible = YES;
+            return star;
+        }
+    }
+    return nil;
+}
+
 -(CCSprite*) lineSpriteWithType:(lineTypes)type
 {
     CCSprite* sprite;
@@ -353,38 +426,41 @@ static const int matrixSize = 8;
         square.isUsing = YES;
         if (square.squareType == SignalSquare) {
             [square runAction:[CCMoveBy actionWithDuration:0.2 position:ccp(0, -square.contentSize.height)]];
-        }else if (square.squareType == DefenceSquare && square.isSpecial){
-            CCSprite* hl = [self lineSpriteWithType:hleft];
-            CCSprite* hr = [self lineSpriteWithType:hright];
-            hl.position = square.position;
-            hr.position = square.position;
-            CGPoint leftEnd = square.position;
-            CGPoint rightEnd = square.position;
-            leftEnd.x = [self positionOfItemAtRow:0 Column:-8].x;
-            rightEnd.x = [self positionOfItemAtRow:0 Column:15].x;
-            CCEaseOut* extendLeft = [CCEaseOut actionWithAction:[CCScaleTo actionWithDuration:1.5 scaleX:8 scaleY:0.7] rate:3];
-            CCEaseOut* extendRight = [CCEaseOut actionWithAction:[CCScaleTo actionWithDuration:1.5 scaleX:8 scaleY:0.7] rate:3];
-            CCEaseOut* moveLeft = [CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:1.5 position:leftEnd] rate:3];
-            CCEaseOut* moveRight = [CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:1.5 position:rightEnd] rate:3];
-            [hl runAction:extendLeft];
-            [hl runAction:moveLeft];
-            [hr runAction:extendRight];
-            [hr runAction:moveRight];
-            [usedSprites addObject:hl];
-            [usedSprites addObject:hr];
-        }else{
-            [square runAction:[CCScaleTo actionWithDuration:0.2 scale:0]];
-            NSString* file = [NSString stringWithFormat:@"remove-%i.plist", square.squareType + 1];
-            CCParticleSystemQuad* sys = [CCParticleSystemQuad particleWithFile:file];
-            sys.position = square.position;
-            sys.autoRemoveOnFinish = YES;
-            [self addChild:sys z:10];
+        }else {
+            if (!square.canMove) {
+                CCSprite* ice = (CCSprite*)[square getChildByTag:@"ice"];
+                ice.visible = NO;
+                [square removeChildByTag:@"ice" cleanup:NO];
+            }
+            if (square.squareType == DefenceSquare && square.isSpecial){
+                CCSprite* hl = [self lineSpriteWithType:hleft];
+                CCSprite* hr = [self lineSpriteWithType:hright];
+                hl.position = square.position;
+                hr.position = square.position;
+                CGPoint leftEnd = square.position;
+                CGPoint rightEnd = square.position;
+                leftEnd.x = [self positionOfItemAtRow:0 Column:-8].x;
+                rightEnd.x = [self positionOfItemAtRow:0 Column:15].x;
+                CCEaseOut* extendLeft = [CCEaseOut actionWithAction:[CCScaleTo actionWithDuration:1.5 scaleX:8 scaleY:0.7] rate:3];
+                CCEaseOut* extendRight = [CCEaseOut actionWithAction:[CCScaleTo actionWithDuration:1.5 scaleX:8 scaleY:0.7] rate:3];
+                CCEaseOut* moveLeft = [CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:1.5 position:leftEnd] rate:3];
+                CCEaseOut* moveRight = [CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:1.5 position:rightEnd] rate:3];
+                [hl runAction:extendLeft];
+                [hl runAction:moveLeft];
+                [hr runAction:extendRight];
+                [hr runAction:moveRight];
+                [usedSprites addObject:hl];
+                [usedSprites addObject:hr];
+            }else{
+                [square runAction:[CCScaleTo actionWithDuration:0.2 scale:0]];
+                NSString* file = [NSString stringWithFormat:@"remove-%i.plist", square.squareType + 1];
+                CCParticleSystemQuad* sys = [CCParticleSystemQuad particleWithFile:file];
+                sys.position = square.position;
+                sys.autoRemoveOnFinish = YES;
+                [self addChild:sys z:10];
+            }
         }
     }
-}
-
--(void) onCallFunc:(id) sender{
-    CCLOG(@"func!!!!!!!!!!!");
 }
 
 -(void) dropSquareAtRow:(int)row Column:(int)column From:(CGPoint)startPoint
@@ -601,6 +677,7 @@ static const int matrixSize = 8;
             square.generateSignal = NO;
             square.generateSpecial = NO;
             square.isSpecial = NO;
+            square.canMove = YES;
             square.scale = 1;
             square.visible = NO;
             [removing removeObject:square];
@@ -616,6 +693,42 @@ static const int matrixSize = 8;
             sprite.visible = NO;
             sprite.scale = 1;
             [usedSprites removeObject:sprite];
+        }
+    }
+    
+    CCSprite* star;
+    CCARRAY_FOREACH(signalStars, star)
+    {
+        if (star.numberOfRunningActions == 0) {
+            [signalStars removeObject:star];
+            signal++;
+        }
+    }
+    
+    for (int i = 0; i < matrixSize * matrixSize; i++) {
+        CCSprite* star = (CCSprite*)[stars objectAtIndex:i];
+        if (star.visible == YES && star.numberOfRunningActions == 0) {
+            star.visible = NO;
+            CCMotionStreak* streak = (CCMotionStreak*)[streaks objectAtIndex:i];
+            [streaks removeObject:streak];
+            [self removeChild:streak cleanup:YES];
+            streak = [CCMotionStreak streakWithFade:0.5 minSeg:10 width:3 color:ccWHITE textureFilename:@"star.png"];
+            [streaks insertObject:streak atIndex:i];
+            [self addChild:streak z:5];
+        }
+    }
+    
+    if (signal > 0) {
+        if (signal > 5) {
+            signal = 5;
+        }
+        for (int i = 0; i < signal; i++) {
+            CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex:i];
+            sprite.visible = YES;
+        }
+        for (int i = signal; i < 5; i++) {
+            CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex:i];
+            sprite.visible = NO;
         }
     }
 }
@@ -642,7 +755,13 @@ static const int matrixSize = 8;
                     }else if (square.squareType == HeatSquare) {
                         increaseTemperature++;
                     }else if (square.squareType == SignalSquare) {
-                        signal++;
+                        //signal++;
+                        CCSprite* star = [self generateStar];
+                        star.position = square.position;
+                        CGPoint worldSignalPosition = [status convertToWorldSpace:((CCSprite*)[ownSignal objectAtIndex:signal]).position];
+                        CGPoint worldStarPosition = [self convertToWorldSpace:star.position];
+                        [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(worldSignalPosition.x - worldStarPosition.x, worldSignalPosition.y - worldStarPosition.y)] rate:3]];
+                        [signalStars addObject:star];
                     }else if (square.squareType == FoodSquare) {
                         increaseTime += 2;
                     }
@@ -682,9 +801,6 @@ static const int matrixSize = 8;
             }
         }
     }
-    needFill = NO;
-    squareSrc = ccp(-1, -1);
-    squareDest = ccp(-1, -1);
     
     //update status
     if (increaseTime > 0) {
@@ -735,23 +851,13 @@ static const int matrixSize = 8;
             sprite.visible = NO;
         }
     }
-    if (signal > 0) {
-        if (signal > 5) {
-            signal = 5;
-        }
-        for (int i = 0; i < signal; i++) {
-            CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex:i];
-            sprite.visible = YES;
-        }
-        for (int i = signal; i < 5; i++) {
-            CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex:i];
-            sprite.visible = NO;
-        }
-    }
     CCLOG(@"!!!time: %f", time);
     CCLOG(@"!!!temperature: %i", temperature);
     CCLOG(@"!!!electricity: %i", electricity);
-    CCLOG(@"!!!signal: %i", signal);
+    
+    needFill = NO;
+    squareSrc = ccp(-1, -1);
+    squareDest = ccp(-1, -1);
 }
 
 -(BOOL) ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event
@@ -761,8 +867,13 @@ static const int matrixSize = 8;
     if (isTouchHandled) {
         squareSrc = [self squareAtPoint:touchLocation];
         isTouchEnable = YES;
+    }else {
+        CGSize screenSize = [[CCDirector sharedDirector] winSize];
+        CCSprite* star = [self generateStar];
+        star.position = ccp(boundingBox.size.width/2 + 1, screenSize.height - boundingBox.size.height/2 - arc4random() % 100);
+        [star runAction:[CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:2 position:ccp(-boundingBox.size.width/2 - 100, boundingBox.size.height/2 + arc4random() % 100)] rate:3]];
     }
-    return isTouchHandled;
+    return YES;
 }
 
 - (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event
@@ -867,8 +978,9 @@ static const int matrixSize = 8;
         
         //temperature decay in every turn
         temperature--;
-        if (temperature < 0) {
+        if (temperature <= 0) {
             temperature = 0;
+            frozen = YES;
         }
     }else{
         //invalid movement
@@ -890,7 +1002,18 @@ static const int matrixSize = 8;
 
 -(void) update:(ccTime)delta
 {
-    time -= delta;
+    if (!win) {
+        time -= delta;
+    }
+    
+    //streaks
+    for (int i = 0; i < matrixSize * matrixSize; i++) {
+        CCSprite* star = (CCSprite*)[stars objectAtIndex:i];
+        if (star.visible == YES) {
+            CCMotionStreak* streak = (CCMotionStreak*)[streaks objectAtIndex:i];
+            [streak setPosition:star.position];
+        }
+    }
     
     if (isAnimating) {
         isAnimating = NO;
@@ -971,6 +1094,35 @@ static const int matrixSize = 8;
         position.x += foodMiddle.contentSize.width * foodMiddle.scaleX;
         foodRight.position = position;
     }
+    
+    //check signal
+    if (signal >= 5) {
+        win = YES;
+        delay -= delta;
+        if (delay < 0) {
+            [[CCTouchDispatcher sharedDispatcher] removeDelegate:self];
+            [[CCDirector sharedDirector] replaceScene: [CCTransitionFade transitionWithDuration:0.5 scene:[WinScene scene] withColor:ccWHITE]];
+        }
+    }
+    
+    //check temperature
+    if (temperature > 0) {
+        frozen = NO;
+    }
+    if (!isAnimating && !isRemoving && !needFill && frozen) {
+        CCLOG(@"!!!!!!!!!!!!frozen");
+        for (int i = 0; i < 3; i++) {
+            int row = arc4random() % matrixSize;
+            int column = arc4random() % matrixSize;
+            SquareSprite* square = [self squareAtRow:row Column:column];
+            if (square.canMove) {
+                square.canMove = NO;
+                CCSprite* ice = [self generateIce];
+                [square addChild:ice z:1 tag:@"ice"];
+            }
+        }
+        frozen = NO;
+    }
 }
 
 -(void) dealloc
@@ -982,7 +1134,11 @@ static const int matrixSize = 8;
     [matrix release];
     [removing release];
     [usedSprites release];
+    [signalStars release];
     [lineSprites release];
+    [ices release];
+    [stars release];
+    [streaks release];
     [super dealloc];
 }
 @end

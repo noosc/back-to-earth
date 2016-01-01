@@ -37,14 +37,20 @@ typedef enum {
     CCArray* matrix;
     CCArray* removing;
     CCArray* usedSprites;
+    CCArray* signalStars;
     CCArray* lineSprites;
+    CCArray* ices;
+    CCArray* stars;
+    CCArray* streaks;
     
     BOOL isAnimating;
     BOOL isTouchEnable;
     BOOL needFill;
     BOOL isInit;
     BOOL isRemoving;
+    BOOL frozen;
     BOOL gameOver;
+    BOOL win;
     
     CGPoint squareSrc;
     CGPoint squareDest;
