@@ -701,7 +701,16 @@ static const int matrixSize = 8;
     {
         if (star.numberOfRunningActions == 0) {
             [signalStars removeObject:star];
-            signal++;
+            int index = (int)((star.position.x + 110.5f) / 20.5f);
+            CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex: index];
+            if (sprite.visible == NO) {
+                sprite.visible = YES;
+                sprite.opacity = 0;
+                [sprite runAction:[CCFadeIn actionWithDuration:0.8]];
+            }
+            if (signal >= 5) {
+                win = YES;
+            }
         }
     }
     
@@ -715,20 +724,6 @@ static const int matrixSize = 8;
             streak = [CCMotionStreak streakWithFade:0.5 minSeg:10 width:3 color:ccWHITE textureFilename:@"star.png"];
             [streaks insertObject:streak atIndex:i];
             [self addChild:streak z:5];
-        }
-    }
-    
-    if (signal > 0) {
-        if (signal > 5) {
-            signal = 5;
-        }
-        for (int i = 0; i < signal; i++) {
-            CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex:i];
-            sprite.visible = YES;
-        }
-        for (int i = signal; i < 5; i++) {
-            CCSprite* sprite = (CCSprite*)[ownSignal objectAtIndex:i];
-            sprite.visible = NO;
         }
     }
 }
@@ -755,13 +750,15 @@ static const int matrixSize = 8;
                     }else if (square.squareType == HeatSquare) {
                         increaseTemperature++;
                     }else if (square.squareType == SignalSquare) {
-                        //signal++;
-                        CCSprite* star = [self generateStar];
-                        star.position = square.position;
-                        CGPoint worldSignalPosition = [status convertToWorldSpace:((CCSprite*)[ownSignal objectAtIndex:signal]).position];
-                        CGPoint worldStarPosition = [self convertToWorldSpace:star.position];
-                        [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(worldSignalPosition.x - worldStarPosition.x, worldSignalPosition.y - worldStarPosition.y)] rate:3]];
-                        [signalStars addObject:star];
+                        if (signal < 5) {
+                            CCSprite* star = [self generateStar];
+                            star.position = square.position;
+                            CGPoint worldSignalPosition = [status convertToWorldSpace:((CCSprite*)[ownSignal objectAtIndex:signal]).position];
+                            CGPoint worldStarPosition = [self convertToWorldSpace:star.position];
+                            [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(worldSignalPosition.x - worldStarPosition.x, worldSignalPosition.y - worldStarPosition.y)] rate:3]];
+                            [signalStars addObject:star];
+                            signal++;
+                        }
                     }else if (square.squareType == FoodSquare) {
                         increaseTime += 2;
                     }
@@ -829,7 +826,15 @@ static const int matrixSize = 8;
     if (increaseElectricity > 0) {
         electricity += increaseElectricity;
         if (electricity >= electricityMax) {
-            signal++;
+            if (signal < 5) {
+                CCSprite* star = [self generateStar];
+                CGPoint worldSignalPosition = [status convertToWorldSpace:((CCSprite*)[ownSignal objectAtIndex:signal]).position];
+                CGPoint worldStarPosition = [self convertToWorldSpace:((CCSprite*)[electricityMiddle objectAtIndex:electricityMax / 2]).position];
+                star.position = [batch convertToNodeSpace:worldStarPosition];
+                [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(worldSignalPosition.x - worldStarPosition.x, worldSignalPosition.y - worldStarPosition.y)] rate:3]];
+                [signalStars addObject:star];
+                signal++;
+            }
             electricity %= electricityMax;
         }
         if (electricity > 0) {
@@ -947,7 +952,7 @@ static const int matrixSize = 8;
 
 -(void) swapSquare
 {
-    if (gameOver || isRemoving || isAnimating || squareSrc.x == -1 || squareDest.x == -1) {
+    if (!win || gameOver || isRemoving || isAnimating || squareSrc.x == -1 || squareDest.x == -1) {
         return;
     }
     isAnimating = YES;
@@ -1095,9 +1100,8 @@ static const int matrixSize = 8;
         foodRight.position = position;
     }
     
-    //check signal
-    if (signal >= 5) {
-        win = YES;
+    //check win
+    if (win) {
         delay -= delta;
         if (delay < 0) {
             [[CCTouchDispatcher sharedDispatcher] removeDelegate:self];
