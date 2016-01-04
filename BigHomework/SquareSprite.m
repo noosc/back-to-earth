@@ -53,7 +53,7 @@
                 frameName = @"special-water.png";
             }
             break;
-        case Electriciysquare:
+        case Electricitysquare:
             if (!special) {
                 frameName = @"square-electricity.png";
             }else {

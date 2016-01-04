@@ -38,6 +38,7 @@ static const int matrixSize = 8;
         needFill = NO;
         gameOver = NO;
         win = NO;
+        needReset = NO;
         squareSrc = ccp(-1, -1);
         squareDest = ccp(-1, -1);
         
@@ -69,6 +70,7 @@ static const int matrixSize = 8;
         removing = [[CCArray alloc] initWithCapacity:15];
         usedSprites = [[CCArray alloc] initWithCapacity:5];
         signalStars = [[CCArray alloc] initWithCapacity:5];
+        timeStars = [[CCArray alloc] initWithCapacity:5];
         
         //remove entire line animation
         lineSprites = [[CCArray alloc] initWithCapacity:numSquare];
@@ -95,7 +97,7 @@ static const int matrixSize = 8;
             CCSprite* star = [CCSprite spriteWithSpriteFrameName:@"star.png"];
             star.visible = NO;
             [stars addObject:star];
-            [batch addChild:star z:11];
+            [batch addChild:star z:13];
         }
         
         //streaks
@@ -109,7 +111,7 @@ static const int matrixSize = 8;
         //mask
         mask = [CCSprite spriteWithSpriteFrameName:@"mask.png"];
         mask.position = ccp(0, 124);
-        [batch addChild:mask z:2];
+        [batch addChild:mask z:12];
         
         //astronaut
         astronaut = [CCSprite spriteWithSpriteFrameName:@"astronaut.png"];
@@ -186,6 +188,10 @@ static const int matrixSize = 8;
             [ownSignal addObject:sprite];
         }
         
+        shake = [CCSprite spriteWithSpriteFrameName:@"shake.png"];
+        shake.opacity = 0;
+        [batch addChild:shake z:20];
+        
         [self scheduleUpdate];
         [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
     }
@@ -207,6 +213,10 @@ static const int matrixSize = 8;
         square.generateSignal = NO;
         square.generateSpecial = NO;
         square.scale = 1;
+        CCSprite* ice = (CCSprite*)[square getChildByTag:@"ice"];
+        if (ice != nil) {
+            [ice removeFromParentAndCleanup:YES];
+        }
     }
     for (int j = 0; j < matrixSize; j++) {
         CCArray* column = [matrix objectAtIndex:j];
@@ -350,6 +360,10 @@ static const int matrixSize = 8;
             [square setType:type isSpecial:special];
             [[matrix objectAtIndex:column] insertObject:square atIndex:row];
             square.isUsing = YES;
+            CCSprite* ice = (CCSprite*)[square getChildByTag:@"ice"];
+            if (ice != nil) {
+                [ice removeFromParentAndCleanup:YES];
+            }
             return;
         }
     }
@@ -360,6 +374,7 @@ static const int matrixSize = 8;
     CCARRAY_FOREACH(ices, ice)
     {
         if (ice.visible == NO) {
+            [ice removeFromParentAndCleanup:YES];
             ice.visible = YES;
             return ice;
         }
@@ -424,14 +439,15 @@ static const int matrixSize = 8;
     CCARRAY_FOREACH(removing, square)
     {
         square.isUsing = YES;
+        if (!square.canMove) {
+            square.canMove = YES;
+            CCSprite* ice = (CCSprite*)[square getChildByTag:@"ice"];
+            ice.visible = NO;
+            [square removeChildByTag:@"ice" cleanup:NO];
+        }
         if (square.squareType == SignalSquare) {
             [square runAction:[CCMoveBy actionWithDuration:0.2 position:ccp(0, -square.contentSize.height)]];
         }else {
-            if (!square.canMove) {
-                CCSprite* ice = (CCSprite*)[square getChildByTag:@"ice"];
-                ice.visible = NO;
-                [square removeChildByTag:@"ice" cleanup:NO];
-            }
             if (square.squareType == DefenceSquare && square.isSpecial){
                 CCSprite* hl = [self lineSpriteWithType:hleft];
                 CCSprite* hr = [self lineSpriteWithType:hright];
@@ -451,14 +467,60 @@ static const int matrixSize = 8;
                 [hr runAction:moveRight];
                 [usedSprites addObject:hl];
                 [usedSprites addObject:hr];
-            }else{
-                [square runAction:[CCScaleTo actionWithDuration:0.2 scale:0]];
-                NSString* file = [NSString stringWithFormat:@"remove-%i.plist", square.squareType + 1];
-                CCParticleSystemQuad* sys = [CCParticleSystemQuad particleWithFile:file];
-                sys.position = square.position;
-                sys.autoRemoveOnFinish = YES;
-                [self addChild:sys z:10];
+            }else if (square.squareType == Watersquare && square.isSpecial){
+                CCSprite* vd = [self lineSpriteWithType:vdown];
+                CCSprite* vu = [self lineSpriteWithType:vup];
+                vd.position = square.position;
+                vu.position = square.position;
+                CGPoint downEnd = square.position;
+                CGPoint upEnd = square.position;
+                downEnd.y = [self positionOfItemAtRow:-8 Column:0].y;
+                upEnd.y = [self positionOfItemAtRow:15 Column:0].y;
+                CCEaseOut* extendDown = [CCEaseOut actionWithAction:[CCScaleTo actionWithDuration:1.5 scaleX:0.7 scaleY:8] rate:3];
+                CCEaseOut* extendUp = [CCEaseOut actionWithAction:[CCScaleTo actionWithDuration:1.5 scaleX:0.7 scaleY:8] rate:3];
+                CCEaseOut* moveDown = [CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:1.5 position:downEnd] rate:3];
+                CCEaseOut* moveUp = [CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:1.5 position:upEnd] rate:3];
+                [vd runAction:extendDown];
+                [vd runAction:moveDown];
+                [vu runAction:extendUp];
+                [vu runAction:moveUp];
+                [usedSprites addObject:vd];
+                [usedSprites addObject:vu];
+            }else if (square.squareType == FoodSquare && square.isSpecial){
+                CCSprite* star = [self generateStar];
+                CGPoint worldTimePosition = [status convertToWorldSpace:foodMiddle.position];
+                worldTimePosition.x += foodMiddle.contentSize.width * foodMiddle.scaleX;
+                CGPoint worldStarPosition = [batch convertToWorldSpace:square.position];
+                star.position = [batch convertToNodeSpace:worldStarPosition];
+                [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(worldTimePosition.x - worldStarPosition.x, worldTimePosition.y - worldStarPosition.y)] rate:3]];
+                [timeStars addObject:star];
+            }else if (square.squareType == HeatSquare && square.isSpecial)
+            {
+                for (int i = 0; i < matrixSize; i++) {
+                    for (int j = 0; j < matrixSize; j++) {
+                        SquareSprite* frozenSquare = [self squareAtRow:i Column:j];
+                        if (frozenSquare.canMove == NO) {
+                            CCSprite* star = [self generateStar];
+                            star.position = square.position;
+                            [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:0.1 position:ccp(frozenSquare.position.x - star.position.x, frozenSquare.position.y - star.position.y)] rate:3]];
+                            frozenSquare.canMove = YES;
+                            CCSprite* ice = (CCSprite*)[frozenSquare getChildByTag:@"ice"];
+                            ice.visible = NO;
+                            [square removeChildByTag:@"ice" cleanup:NO];
+                            CCParticleSystemQuad* sys = [CCParticleSystemQuad particleWithFile:@"remove-ice.plist"];
+                            sys.position = frozenSquare.position;
+                            sys.autoRemoveOnFinish = YES;
+                            [self addChild:sys z:10];
+                        }
+                    }
+                }
             }
+            [square runAction:[CCScaleTo actionWithDuration:0.2 scale:0]];
+            NSString* file = [NSString stringWithFormat:@"remove-%i.plist", square.squareType + 1];
+            CCParticleSystemQuad* sys = [CCParticleSystemQuad particleWithFile:file];
+            sys.position = square.position;
+            sys.autoRemoveOnFinish = YES;
+            [self addChild:sys z:10];
         }
     }
 }
@@ -548,7 +610,7 @@ static const int matrixSize = 8;
     for (int i = 0; i < matrixSize; i++) {
         for (int j = 0; j < matrixSize; j++) {
             SquareSprite* square = [self squareAtRow:i Column:j];
-            if (square.toBeRemove == YES && square.isSpecial) {
+            if (square.toBeRemove == YES && square.isSpecial && square.squareType == Watersquare) {
                 for (int k = 0; k < matrixSize; k++) {
                     SquareSprite* rowSquare = [self squareAtRow:k Column:j];
                     if (rowSquare.squareType == SignalSquare) {
@@ -559,6 +621,7 @@ static const int matrixSize = 8;
                     }
                     rowSquare.toBeRemove = YES;
                 }
+            }else if (square.toBeRemove == YES && square.isSpecial && square.squareType == DefenceSquare) {
                 for (int k = 0; k < matrixSize; k++) {
                     SquareSprite* columnSquare = [self squareAtRow:i Column:k];
                     if (columnSquare.squareType == SignalSquare) {
@@ -714,6 +777,14 @@ static const int matrixSize = 8;
         }
     }
     
+    CCARRAY_FOREACH(timeStars, star)
+    {
+        if (star.numberOfRunningActions == 0) {
+            [timeStars removeObject:star];
+            [foodMiddle runAction:[CCEaseInOut actionWithAction:[CCScaleTo actionWithDuration:0.5 scaleX:1 scaleY:1] rate:3]];
+        }
+    }
+    
     for (int i = 0; i < matrixSize * matrixSize; i++) {
         CCSprite* star = (CCSprite*)[stars objectAtIndex:i];
         if (star.visible == YES && star.numberOfRunningActions == 0) {
@@ -745,7 +816,7 @@ static const int matrixSize = 8;
             if (square.toBeRemove == YES) {
                 //calculate status increasement
                 if (!isInit) {
-                    if (square.squareType == Electriciysquare) {
+                    if (square.squareType == Electricitysquare) {
                         increaseElectricity++;
                     }else if (square.squareType == HeatSquare) {
                         increaseTemperature++;
@@ -772,7 +843,7 @@ static const int matrixSize = 8;
                     square.visible = YES;
                     square.scale = 1;
                     vacancies--;
-                }else if (square.generateSpecial == YES){
+                }else if (square.generateSpecial == YES && square.squareType != Electricitysquare){
                     square.generateSpecial = NO;
                     [square setType:square.squareType isSpecial:YES];
                     square.visible = YES;
@@ -829,7 +900,7 @@ static const int matrixSize = 8;
             if (signal < 5) {
                 CCSprite* star = [self generateStar];
                 CGPoint worldSignalPosition = [status convertToWorldSpace:((CCSprite*)[ownSignal objectAtIndex:signal]).position];
-                CGPoint worldStarPosition = [self convertToWorldSpace:((CCSprite*)[electricityMiddle objectAtIndex:electricityMax / 2]).position];
+                CGPoint worldStarPosition = [status convertToWorldSpace:((CCSprite*)[electricityMiddle objectAtIndex:electricityMax / 2]).position];
                 star.position = [batch convertToNodeSpace:worldStarPosition];
                 [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(worldSignalPosition.x - worldStarPosition.x, worldSignalPosition.y - worldStarPosition.y)] rate:3]];
                 [signalStars addObject:star];
@@ -952,7 +1023,7 @@ static const int matrixSize = 8;
 
 -(void) swapSquare
 {
-    if (!win || gameOver || isRemoving || isAnimating || squareSrc.x == -1 || squareDest.x == -1) {
+    if (needReset || win || gameOver || isRemoving || isAnimating || squareSrc.x == -1 || squareDest.x == -1) {
         return;
     }
     isAnimating = YES;
@@ -1035,9 +1106,11 @@ static const int matrixSize = 8;
     }
     if (!isInit && !isAnimating) {
         [self scanSquares];
-        if (![self isAvailable]) {
+        if (![self isAvailable] && needReset == NO && !isAnimating && !isRemoving && !needFill) {
             //no square can be move to remove
-            [self resetSquares];
+            needReset = YES;
+            [shake runAction:[CCFadeIn actionWithDuration:0.5]];
+            //[self resetSquares];
         }
         [self recycle];
         //CCLOG(@"is not animating");
@@ -1093,11 +1166,13 @@ static const int matrixSize = 8;
                 [[CCDirector sharedDirector] replaceScene: [CCTransitionFade transitionWithDuration:0.5 scene:[LoseScene scene] withColor:ccWHITE]];
             }
         }
-    }else {
+    }else if (foodMiddle.numberOfRunningActions == 0){
         foodMiddle.scaleX = time/timeMax;
         CGPoint position = foodMiddle.position;
         position.x += foodMiddle.contentSize.width * foodMiddle.scaleX;
         foodRight.position = position;
+    }else {
+        time = timeMax;
     }
     
     //check win
@@ -1129,6 +1204,28 @@ static const int matrixSize = 8;
     }
 }
 
+-(void) setAstronautPositionX:(int)x
+{
+    CGPoint position = astronaut.position;
+    position.x = x;
+    if (x > 10) {
+        position.x = 10;
+    }
+    if (x < -10) {
+        position.x = -10;
+    }
+    astronaut.position = position;
+}
+
+-(void) resetByShake
+{
+    if (needReset) {
+        [shake runAction:[CCFadeOut actionWithDuration:0.5]];
+        [self resetSquares];
+        needReset = NO;
+    }
+}
+
 -(void) dealloc
 {
     [electricityMiddle release];
@@ -1139,6 +1236,7 @@ static const int matrixSize = 8;
     [removing release];
     [usedSprites release];
     [signalStars release];
+    [timeStars release];
     [lineSprites release];
     [ices release];
     [stars release];

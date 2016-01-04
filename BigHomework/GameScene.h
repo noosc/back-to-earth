@@ -7,10 +7,11 @@
 //
 
 #import "cocos2d.h"
+#import "SquareCache.h"
 
 @interface GameScene : CCLayer
 {
-    
+    SquareCache* squareCache;
 }
 
 +(CCScene *) scene;

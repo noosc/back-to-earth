@@ -8,7 +8,6 @@
 
 #import "GameScene.h"
 #import "SimpleAudioEngine.h"
-#import "SquareCache.h"
 
 @implementation GameScene
 
@@ -39,7 +38,7 @@
         outFrame.position = ccp(screenSize.width/2, outFrame.contentSize.height/2 + 5);
         //[self addChild:outFrame z:1];
         
-        SquareCache* squareCache = [SquareCache node];
+        squareCache = [SquareCache node];
         squareCache.position = outFrame.position;
         squareCache.boundingBox = [outFrame boundingBox];
         [self addChild:squareCache z:2];
@@ -55,6 +54,15 @@
 
 -(void) update:(ccTime)delta
 {
+}
+
+-(void) accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration
+{
+    //CCLOG(@"acceleration: %f" , acceleration.x);
+    [squareCache setAstronautPositionX:acceleration.x*20];
+    if (acceleration.x < -4 || acceleration.x > 4) {
+        [squareCache resetByShake];
+    }
 }
 
 @end

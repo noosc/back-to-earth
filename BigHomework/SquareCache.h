@@ -16,7 +16,7 @@ typedef enum {
     MAX,
 }lineTypes;
 
-@interface SquareCache : CCNode <CCTargetedTouchDelegate>
+@interface SquareCache : CCNode <CCTargetedTouchDelegate , UIAccelerometerDelegate>
 {
     CCSpriteBatchNode* batch;
     CCSprite* astronaut;
@@ -38,10 +38,12 @@ typedef enum {
     CCArray* removing;
     CCArray* usedSprites;
     CCArray* signalStars;
+    CCArray* timeStars;
     CCArray* lineSprites;
     CCArray* ices;
     CCArray* stars;
     CCArray* streaks;
+    CCSprite* shake;
     
     BOOL isAnimating;
     BOOL isTouchEnable;
@@ -51,6 +53,7 @@ typedef enum {
     BOOL frozen;
     BOOL gameOver;
     BOOL win;
+    BOOL needReset;
     
     CGPoint squareSrc;
     CGPoint squareDest;
@@ -67,4 +70,6 @@ typedef enum {
     ccTime delay;
 }
 @property CGRect boundingBox;
+-(void) setAstronautPositionX:(int)x;
+-(void) resetByShake;
 @end

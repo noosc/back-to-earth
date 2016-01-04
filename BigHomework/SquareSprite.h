@@ -10,7 +10,7 @@
 
 typedef enum {
     DefenceSquare = 0,
-    Electriciysquare,
+    Electricitysquare,
     HeatSquare,
     FoodSquare,
     Watersquare,
