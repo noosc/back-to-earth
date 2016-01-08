@@ -160,6 +160,16 @@
 		DD45E0D11C3620D6006A8A26 /* WinScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DD45E0D01C3620D6006A8A26 /* WinScene.m */; };
 		DD45E0DB1C37D237006A8A26 /* star.png in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0DA1C37D237006A8A26 /* star.png */; };
 		DD45E0DD1C37EF2B006A8A26 /* remove-ice.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0DC1C37EF2B006A8A26 /* remove-ice.plist */; };
+		DD45E0E11C3BB2D3006A8A26 /* biu.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0E01C3BB2D3006A8A26 /* biu.mp4 */; };
+		DD45E0E31C3BB53A006A8A26 /* icebreak.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0E21C3BB53A006A8A26 /* icebreak.mp3 */; };
+		DD45E0E51C3BB5FD006A8A26 /* eliminate.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0E41C3BB5FD006A8A26 /* eliminate.mp3 */; };
+		DD45E0E71C3BB73B006A8A26 /* ownSignal.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0E61C3BB73B006A8A26 /* ownSignal.mp3 */; };
+		DD45E0E91C3BB842006A8A26 /* line.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0E81C3BB842006A8A26 /* line.mp3 */; };
+		DD45E0EB1C3BB8ED006A8A26 /* time.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0EA1C3BB8ED006A8A26 /* time.mp3 */; };
+		DD45E0EF1C3C0EAF006A8A26 /* lose.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0EC1C3C0EAF006A8A26 /* lose.mp3 */; };
+		DD45E0F01C3C0EAF006A8A26 /* star.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0ED1C3C0EAF006A8A26 /* star.mp3 */; };
+		DD45E0F11C3C0EAF006A8A26 /* win.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0EE1C3C0EAF006A8A26 /* win.mp3 */; };
+		DD45E0F31C3C0EF7006A8A26 /* frozen.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD45E0F21C3C0EF7006A8A26 /* frozen.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -457,6 +467,16 @@
 		DD45E0D01C3620D6006A8A26 /* WinScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WinScene.m; sourceTree = "<group>"; };
 		DD45E0DA1C37D237006A8A26 /* star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = star.png; path = Resources/star.png; sourceTree = "<group>"; };
 		DD45E0DC1C37EF2B006A8A26 /* remove-ice.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "remove-ice.plist"; path = "Resources/remove-ice.plist"; sourceTree = "<group>"; };
+		DD45E0E01C3BB2D3006A8A26 /* biu.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = biu.mp4; path = Resources/biu.mp4; sourceTree = "<group>"; };
+		DD45E0E21C3BB53A006A8A26 /* icebreak.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = icebreak.mp3; path = Resources/icebreak.mp3; sourceTree = "<group>"; };
+		DD45E0E41C3BB5FD006A8A26 /* eliminate.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = eliminate.mp3; path = Resources/eliminate.mp3; sourceTree = "<group>"; };
+		DD45E0E61C3BB73B006A8A26 /* ownSignal.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = ownSignal.mp3; path = Resources/ownSignal.mp3; sourceTree = "<group>"; };
+		DD45E0E81C3BB842006A8A26 /* line.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = line.mp3; path = Resources/line.mp3; sourceTree = "<group>"; };
+		DD45E0EA1C3BB8ED006A8A26 /* time.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = time.mp3; path = Resources/time.mp3; sourceTree = "<group>"; };
+		DD45E0EC1C3C0EAF006A8A26 /* lose.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = lose.mp3; path = Resources/lose.mp3; sourceTree = "<group>"; };
+		DD45E0ED1C3C0EAF006A8A26 /* star.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = star.mp3; path = Resources/star.mp3; sourceTree = "<group>"; };
+		DD45E0EE1C3C0EAF006A8A26 /* win.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = win.mp3; path = Resources/win.mp3; sourceTree = "<group>"; };
+		DD45E0F21C3C0EF7006A8A26 /* frozen.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = frozen.mp3; path = Resources/frozen.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -541,6 +561,16 @@
 		DD3796DC1C23CD79005669C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DD45E0F21C3C0EF7006A8A26 /* frozen.mp3 */,
+				DD45E0EC1C3C0EAF006A8A26 /* lose.mp3 */,
+				DD45E0ED1C3C0EAF006A8A26 /* star.mp3 */,
+				DD45E0EE1C3C0EAF006A8A26 /* win.mp3 */,
+				DD45E0EA1C3BB8ED006A8A26 /* time.mp3 */,
+				DD45E0E81C3BB842006A8A26 /* line.mp3 */,
+				DD45E0E61C3BB73B006A8A26 /* ownSignal.mp3 */,
+				DD45E0E41C3BB5FD006A8A26 /* eliminate.mp3 */,
+				DD45E0E21C3BB53A006A8A26 /* icebreak.mp3 */,
+				DD45E0E01C3BB2D3006A8A26 /* biu.mp4 */,
 				DD45E0DC1C37EF2B006A8A26 /* remove-ice.plist */,
 				DD45E0DA1C37D237006A8A26 /* star.png */,
 				DD3798B61C2D2349005669C2 /* go.plist */,
@@ -981,12 +1011,16 @@
 			files = (
 				DD3796EC1C23CD79005669C2 /* Icon-Small.png in Resources */,
 				DD37986D1C23D280005669C2 /* background.png in Resources */,
+				DD45E0E31C3BB53A006A8A26 /* icebreak.mp3 in Resources */,
 				DD3798B91C2D2349005669C2 /* go.png in Resources */,
 				DD3796E01C23CD79005669C2 /* Default-Landscape~ipad.png in Resources */,
 				DD3796F01C23CD79005669C2 /* Icon.png in Resources */,
+				DD45E0E91C3BB842006A8A26 /* line.mp3 in Resources */,
 				DD3798B11C2D0D6A005669C2 /* start1.png in Resources */,
+				DD45E0E11C3BB2D3006A8A26 /* biu.mp4 in Resources */,
 				DD3798931C2ADC08005669C2 /* remove-3.plist in Resources */,
 				DD45E0DD1C37EF2B006A8A26 /* remove-ice.plist in Resources */,
+				DD45E0EF1C3C0EAF006A8A26 /* lose.mp3 in Resources */,
 				DD3798B51C2D0D6A005669C2 /* start3.png in Resources */,
 				DD3798951C2ADC08005669C2 /* remove-5.plist in Resources */,
 				DD45E0DB1C37D237006A8A26 /* star.png in Resources */,
@@ -994,9 +1028,12 @@
 				DD3796EE1C23CD79005669C2 /* Icon-Small@2x.png in Resources */,
 				DD37986B1C23D278005669C2 /* Default-568h@2x.png in Resources */,
 				DD37987B1C23DF9B005669C2 /* outframe.png in Resources */,
+				DD45E0F31C3C0EF7006A8A26 /* frozen.mp3 in Resources */,
 				DD3798971C2BBAEC005669C2 /* Aurora'sTheme.mp4 in Resources */,
+				DD45E0F01C3C0EAF006A8A26 /* star.mp3 in Resources */,
 				DD3796F21C23CD79005669C2 /* Icon@2x.png in Resources */,
 				DD37989D1C2BC470005669C2 /* square.png in Resources */,
+				DD45E0F11C3C0EAF006A8A26 /* win.mp3 in Resources */,
 				DD3796DE1C23CD79005669C2 /* Default.png in Resources */,
 				DD3798921C2ADC08005669C2 /* remove-2.plist in Resources */,
 				DD3798911C2ADC08005669C2 /* remove-1.plist in Resources */,
@@ -1006,9 +1043,12 @@
 				DD3796E61C23CD79005669C2 /* fps_images-ipadhd.png in Resources */,
 				DD3796E21C23CD79005669C2 /* fps_images.png in Resources */,
 				DD3798B21C2D0D6A005669C2 /* start2.plist in Resources */,
+				DD45E0E51C3BB5FD006A8A26 /* eliminate.mp3 in Resources */,
+				DD45E0E71C3BB73B006A8A26 /* ownSignal.mp3 in Resources */,
 				DD3798B81C2D2349005669C2 /* go.plist in Resources */,
 				DD3796E41C23CD79005669C2 /* fps_images-hd.png in Resources */,
 				DD3796E81C23CD79005669C2 /* Icon-72.png in Resources */,
+				DD45E0EB1C3BB8ED006A8A26 /* time.mp3 in Resources */,
 				DD3798B41C2D0D6A005669C2 /* start3.plist in Resources */,
 				DD3798941C2ADC08005669C2 /* remove-4.plist in Resources */,
 				DD37989C1C2BC470005669C2 /* square.plist in Resources */,

@@ -11,6 +11,7 @@
 #import "GameScene.h"
 #import "LoseScene.h"
 #import "WinScene.h"
+#import "SimpleAudioEngine.h"
 
 @implementation SquareCache
 @synthesize boundingBox;
@@ -215,6 +216,7 @@ static const int matrixSize = 8;
         square.scale = 1;
         CCSprite* ice = (CCSprite*)[square getChildByTag:@"ice"];
         if (ice != nil) {
+            ice.visible = NO;
             [ice removeFromParentAndCleanup:YES];
         }
     }
@@ -264,6 +266,44 @@ static const int matrixSize = 8;
             if (square.canMerge == NO || square.canMove == NO) {
                 continue;
             }
+            /*    o
+                  #   */
+            if (i > 0 && [self squareAtRow:i - 1 Column:j].squareType == square.squareType) {
+                /*    o
+                      #
+                      #   */
+                if (i > 1 && [self squareAtRow:i - 2 Column:j].squareType == square.squareType) {
+                    return YES;
+                }
+                /*    #
+                      o
+                      #   */
+                if (i < matrixSize - 1 && [self squareAtRow:i + 1 Column:j].squareType == square.squareType) {
+                    return YES;
+                }
+            }
+            /*    #
+                  #
+                  o   */
+            if (i < matrixSize - 2 && [self squareAtRow:i + 1 Column:j].squareType == square.squareType && [self squareAtRow:i + 2 Column:j].squareType == square.squareType) {
+                return YES;
+            }
+            //  #o
+            if (j > 0 && [self squareAtRow:i Column:j - 1].squareType == square.squareType) {
+                //   ##o
+                if (j > 1 && [self squareAtRow:i Column:j - 2].squareType == square.squareType) {
+                    return YES;
+                }
+                //   #o#
+                if (j < matrixSize - 1 && [self squareAtRow:i Column:j + 1].squareType == square.squareType) {
+                    return YES;
+                }
+            }
+            //   o##
+            if (j < matrixSize - 2 && [self squareAtRow:i Column:j + 1].squareType == square.squareType && [self squareAtRow:i Column:j + 2].squareType == square.squareType) {
+                return YES;
+            }
+            
             /*    o
                  #    */
             if (i > 0 && j > 0 && [self squareAtRow:i - 1 Column:j - 1].squareType == square.squareType) {
@@ -346,6 +386,28 @@ static const int matrixSize = 8;
                     return YES;
                 }
             }
+            /*  #
+                #
+             
+                o   */
+            if (i < matrixSize - 3 && [self squareAtRow:i + 3 Column:j].squareType == square.squareType && [self squareAtRow:i + 2 Column:j].squareType == square.squareType && [self squareAtRow:i + 1 Column:j].canMove) {
+                return YES;
+            }
+            /*  o
+             
+                #
+                #   */
+            if (i > 2 && [self squareAtRow:i - 3 Column:j].squareType == square.squareType && [self squareAtRow:i - 2 Column:j].squareType == square.squareType && [self squareAtRow:i - 1 Column:j].canMove) {
+                return YES;
+            }
+            //  o ##
+            if (j < matrixSize - 3 && [self squareAtRow:i Column:j + 3].squareType == square.squareType && [self squareAtRow:i Column:j + 2].squareType == square.squareType && [self squareAtRow:i Column:j + 1].canMove) {
+                return YES;
+            }
+            //  ## o
+            if (j > 2 && [self squareAtRow:i Column:j - 3].squareType == square.squareType && [self squareAtRow:i Column:j - 2].squareType == square.squareType && [self squareAtRow:i Column:j - 1].canMove) {
+                return YES;
+            }
         }
     }
     return NO;
@@ -362,6 +424,7 @@ static const int matrixSize = 8;
             square.isUsing = YES;
             CCSprite* ice = (CCSprite*)[square getChildByTag:@"ice"];
             if (ice != nil) {
+                ice.visible = NO;
                 [ice removeFromParentAndCleanup:YES];
             }
             return;
@@ -443,12 +506,14 @@ static const int matrixSize = 8;
             square.canMove = YES;
             CCSprite* ice = (CCSprite*)[square getChildByTag:@"ice"];
             ice.visible = NO;
-            [square removeChildByTag:@"ice" cleanup:NO];
+            [ice removeFromParentAndCleanup:YES];
         }
         if (square.squareType == SignalSquare) {
             [square runAction:[CCMoveBy actionWithDuration:0.2 position:ccp(0, -square.contentSize.height)]];
         }else {
+            [[SimpleAudioEngine sharedEngine] playEffect:@"eliminate.mp3"];
             if (square.squareType == DefenceSquare && square.isSpecial){
+                [[SimpleAudioEngine sharedEngine] playEffect:@"line.mp3"];
                 CCSprite* hl = [self lineSpriteWithType:hleft];
                 CCSprite* hr = [self lineSpriteWithType:hright];
                 hl.position = square.position;
@@ -468,6 +533,7 @@ static const int matrixSize = 8;
                 [usedSprites addObject:hl];
                 [usedSprites addObject:hr];
             }else if (square.squareType == Watersquare && square.isSpecial){
+                [[SimpleAudioEngine sharedEngine] playEffect:@"line.mp3"];
                 CCSprite* vd = [self lineSpriteWithType:vdown];
                 CCSprite* vu = [self lineSpriteWithType:vup];
                 vd.position = square.position;
@@ -494,25 +560,32 @@ static const int matrixSize = 8;
                 star.position = [batch convertToNodeSpace:worldStarPosition];
                 [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(worldTimePosition.x - worldStarPosition.x, worldTimePosition.y - worldStarPosition.y)] rate:3]];
                 [timeStars addObject:star];
+                [[SimpleAudioEngine sharedEngine] playEffect:@"star.mp3"];
             }else if (square.squareType == HeatSquare && square.isSpecial)
             {
+                BOOL playSound = NO;
                 for (int i = 0; i < matrixSize; i++) {
                     for (int j = 0; j < matrixSize; j++) {
                         SquareSprite* frozenSquare = [self squareAtRow:i Column:j];
                         if (frozenSquare.canMove == NO) {
+                            playSound = YES;
                             CCSprite* star = [self generateStar];
                             star.position = square.position;
                             [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:0.1 position:ccp(frozenSquare.position.x - star.position.x, frozenSquare.position.y - star.position.y)] rate:3]];
                             frozenSquare.canMove = YES;
                             CCSprite* ice = (CCSprite*)[frozenSquare getChildByTag:@"ice"];
                             ice.visible = NO;
-                            [square removeChildByTag:@"ice" cleanup:NO];
+                            [ice removeFromParentAndCleanup:YES];
                             CCParticleSystemQuad* sys = [CCParticleSystemQuad particleWithFile:@"remove-ice.plist"];
                             sys.position = frozenSquare.position;
                             sys.autoRemoveOnFinish = YES;
                             [self addChild:sys z:10];
                         }
                     }
+                }
+                if (playSound) {
+                    [[SimpleAudioEngine sharedEngine] playEffect:@"biu.mp4"];
+                    [[SimpleAudioEngine sharedEngine] playEffect:@"icebreak.mp3"];
                 }
             }
             [square runAction:[CCScaleTo actionWithDuration:0.2 scale:0]];
@@ -769,10 +842,32 @@ static const int matrixSize = 8;
             if (sprite.visible == NO) {
                 sprite.visible = YES;
                 sprite.opacity = 0;
+                [[SimpleAudioEngine sharedEngine] playEffect:@"ownSignal.mp3"];
                 [sprite runAction:[CCFadeIn actionWithDuration:0.8]];
             }
-            if (signal >= 5) {
-                win = YES;
+            if (signal >= 0) {
+                foodLeft.visible = NO;
+                foodRight.visible = NO;
+                foodMiddle.visible = NO;
+                mask.visible = NO;
+                //win
+                if (!win) {
+                    win = YES;
+                    [[SimpleAudioEngine sharedEngine] playEffect:@"win.mp3"];
+                    [batch runAction:[CCEaseIn actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(0, -boundingBox.size.height)] rate:3]];
+                    [status runAction:[CCEaseIn actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(0, boundingBox.size.height)] rate:3]];
+                    
+                    NSMutableArray* frames = [NSMutableArray arrayWithCapacity:9];
+                    for (int i = 0; i < 9; i++) {
+                        NSString* file = [NSString stringWithFormat:@"win%i.png", i+1];
+                        CCSpriteFrame* frame = [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:file];
+                        [frames addObject:frame];
+                    }
+                    CCAnimation* anim = [CCAnimation animationWithSpriteFrames:frames delay:0.2f];
+                    CCAnimate* success = [CCAnimate actionWithAnimation:anim];
+                    [astronaut stopAllActions];
+                    [astronaut runAction:success];
+                }
             }
         }
     }
@@ -780,6 +875,7 @@ static const int matrixSize = 8;
     CCARRAY_FOREACH(timeStars, star)
     {
         if (star.numberOfRunningActions == 0) {
+            [[SimpleAudioEngine sharedEngine] playEffect:@"time.mp3"];
             [timeStars removeObject:star];
             [foodMiddle runAction:[CCEaseInOut actionWithAction:[CCScaleTo actionWithDuration:0.5 scaleX:1 scaleY:1] rate:3]];
         }
@@ -827,6 +923,7 @@ static const int matrixSize = 8;
                             CGPoint worldSignalPosition = [status convertToWorldSpace:((CCSprite*)[ownSignal objectAtIndex:signal]).position];
                             CGPoint worldStarPosition = [self convertToWorldSpace:star.position];
                             [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(worldSignalPosition.x - worldStarPosition.x, worldSignalPosition.y - worldStarPosition.y)] rate:3]];
+                            [[SimpleAudioEngine sharedEngine] playEffect:@"star.mp3"];
                             [signalStars addObject:star];
                             signal++;
                         }
@@ -903,6 +1000,7 @@ static const int matrixSize = 8;
                 CGPoint worldStarPosition = [status convertToWorldSpace:((CCSprite*)[electricityMiddle objectAtIndex:electricityMax / 2]).position];
                 star.position = [batch convertToNodeSpace:worldStarPosition];
                 [star runAction:[CCEaseOut actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(worldSignalPosition.x - worldStarPosition.x, worldSignalPosition.y - worldStarPosition.y)] rate:3]];
+                [[SimpleAudioEngine sharedEngine] playEffect:@"star.mp3"];
                 [signalStars addObject:star];
                 signal++;
             }
@@ -948,6 +1046,7 @@ static const int matrixSize = 8;
         CCSprite* star = [self generateStar];
         star.position = ccp(boundingBox.size.width/2 + 1, screenSize.height - boundingBox.size.height/2 - arc4random() % 100);
         [star runAction:[CCEaseOut actionWithAction:[CCMoveTo actionWithDuration:2 position:ccp(-boundingBox.size.width/2 - 100, boundingBox.size.height/2 + arc4random() % 100)] rate:3]];
+        [[SimpleAudioEngine sharedEngine] playEffect:@"star.mp3"];
     }
     return YES;
 }
@@ -1145,6 +1244,7 @@ static const int matrixSize = 8;
         //game over
         if (!gameOver) {
             gameOver = YES;
+            [[SimpleAudioEngine sharedEngine] playEffect:@"lose.mp3"];
             [batch runAction:[CCEaseIn actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(0, -boundingBox.size.height)] rate:3]];
             [status runAction:[CCEaseIn actionWithAction:[CCMoveBy actionWithDuration:1 position:ccp(0, boundingBox.size.height)] rate:3]];
             
@@ -1176,7 +1276,7 @@ static const int matrixSize = 8;
     }
     
     //check win
-    if (win) {
+    if (win && batch.numberOfRunningActions == 0 && status.numberOfRunningActions == 0 && astronaut.numberOfRunningActions == 0) {
         delay -= delta;
         if (delay < 0) {
             [[CCTouchDispatcher sharedDispatcher] removeDelegate:self];
@@ -1185,10 +1285,13 @@ static const int matrixSize = 8;
     }
     
     //check temperature
+    //temperature = 0;
     if (temperature > 0) {
         frozen = NO;
     }
+    //frozen = YES;
     if (!isAnimating && !isRemoving && !needFill && frozen) {
+        [[SimpleAudioEngine sharedEngine] playEffect:@"frozen.mp3"];
         CCLOG(@"!!!!!!!!!!!!frozen");
         for (int i = 0; i < 3; i++) {
             int row = arc4random() % matrixSize;
