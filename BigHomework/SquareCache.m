@@ -845,7 +845,7 @@ static const int matrixSize = 8;
                 [[SimpleAudioEngine sharedEngine] playEffect:@"ownSignal.mp3"];
                 [sprite runAction:[CCFadeIn actionWithDuration:0.8]];
             }
-            if (signal >= 0) {
+            if (signal >= 5) {
                 foodLeft.visible = NO;
                 foodRight.visible = NO;
                 foodMiddle.visible = NO;
